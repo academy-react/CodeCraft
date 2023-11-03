@@ -1,7 +1,7 @@
 import * as yup from "yup";
 
 // login
-export const loginValidation = yup.object({
+export const loginValidationEmail = yup.object({
   password: yup
     .string("رمز شما معتبر نیست")
     .required("لطفا رمز خود را وارد کنید"),
@@ -9,6 +9,17 @@ export const loginValidation = yup.object({
     .string("ایمیل شما معتبر نمی باشد")
     .email("ایمیل شما معتبر نمی باشد")
     .required("لطفا ایمیل خود را وارد کنید"),
+});
+
+export const loginValidationPhone = yup.object({
+  password: yup
+    .string("رمز شما معتبر نیست")
+    .required("لطفا رمز خود را وارد کنید"),
+  phone: yup
+    .number("شماره تماس شما معتبر نمی باشد")
+    .required("لطفا شماره تماس خود را وارد کنید خود را وارد کنید"),
+  // .min(11, "شماره تماس شما معتبر نمی باشد")
+  // .max(11, "شماره تماس شما معتبر نمی باشد"),
 });
 
 // sign up
