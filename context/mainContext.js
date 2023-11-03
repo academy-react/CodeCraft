@@ -80,7 +80,7 @@ const MainContextProvider = ({ children }) => {
   };
   const handleRemoveUser = async () => {
     const newUsers = users.filter((user) => user.id !== currentUser.id);
-    await axios.delete("http://localhost:8000/users/" + currentUser.id);
+    useLocalStorage("users", newUsers, true);
     setUsers(newUsers);
     await router.replace("/");
     setUserIsLogin(false);
@@ -266,7 +266,14 @@ const MainContextProvider = ({ children }) => {
       const response = await axios.get("http://localhost:8000/users");
       return response;
     };
-    getUsers().then((data) => setUsers(data.data));
+    const prevUsersInSystem = useLocalStorage("users", "", true);
+    getUsers().then((data) =>
+      setUsers(
+        data.data.filter((user) =>
+          prevUsersInSystem.some((prevUser) => prevUser.id === user.id)
+        )
+      )
+    );
 
     // bookList
     const bookList = useLocalStorage("BookList", "", true);

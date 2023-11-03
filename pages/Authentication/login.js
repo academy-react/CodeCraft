@@ -2,26 +2,35 @@ import HomeButton from "@/components/common/HomeButton";
 import mainContext from "@/context/mainContext";
 import { loginValidation } from "@/core/validation/validation";
 import useLocalStorage from "@/hooks/useLocalStorage";
+import axios from "axios";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 const Login = () => {
   const [passwordInputIsHidden, setPasswordInputIsHidden] = useState(true);
+  const [AllUsers, setAllUsers] = useState([]);
 
   const contextData = useContext(mainContext);
   const router = useRouter();
+
+  useEffect(() => {
+    const getUsers = async () => {
+      const AllUsers = await axios.get("http://localhost:8000/users");
+      setAllUsers(AllUsers.data);
+    };
+    getUsers();
+  }, []);
   const handleSubmit = (values, events) => {
     if (
-      contextData.users.some(
+      AllUsers.some(
         (user) =>
           user.password === values.password && user.email === values.email
       )
     ) {
-      const currentUser = contextData.users.find((user) => {
-        console.log(user.password);
+      const currentUser = AllUsers.find((user) => {
         return user.password === values.password && user.email === values.email;
       });
       useLocalStorage("userData", currentUser, true);

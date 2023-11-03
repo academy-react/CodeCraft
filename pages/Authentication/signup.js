@@ -28,14 +28,18 @@ const signup = () => {
   ];
   const [currentStep, setCurrentStep] = useState(0);
 
-  function handleNextStep(newData, finalStep = false) {
+  function handleNextStep(newData, finalStep = false, sameAccounts = false) {
     setData((prev) => ({ ...prev, ...newData }));
     if (finalStep) {
       newData.id = contextData.users.length + 1;
       newData.profile = "images/icons/profile.jpg";
-      contextData.users.push(newData);
+      const newUsers = [...contextData.users, newData];
+      if (sameAccounts) {
+        contextData.setUsers(newUsers);
+        console.log(newUsers);
+        useLocalStorage("users", newUsers, true);
+      }
       axios.post("http://localhost:8000/users", newData);
-      useLocalStorage("users", contextData.users, true);
       contextData.handleLoginUser(true);
       router.replace("/Authentication/login");
       return;

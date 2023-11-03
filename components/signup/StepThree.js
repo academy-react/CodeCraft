@@ -24,16 +24,15 @@ const StepThree = ({ next, prev, data }) => {
   };
   const [passwordInputIsHidden, setPasswordInputIsHidden] = useState(true);
   const [sholdeSaveUser, setSholdeSaveUser] = useState(false);
+  const [sameAccounts, setSameAccounts] = useState(false);
 
   const handleSubmit = (values) => {
     if (!contextData.users.some((user) => user.email === values.email)) {
       if (sholdeSaveUser) {
         values.id = contextData.users.length + 1;
         values.profile = "images/icons/profile.jpg";
-        const newUsers = [...contextData.users, values];
-        useLocalStorage("users", newUsers, true);
       }
-      next(values, true);
+      next(values, true, sameAccounts === "on" ? true : false);
     } else {
       contextData.handleShowSnack("ایمیل شما قبلا استفاده شده", 3000, "error");
     }
@@ -176,7 +175,11 @@ const StepThree = ({ next, prev, data }) => {
             </span>
           </div>
           <div className="flex justify-start gap-3 items-center mt-3">
-            <input type="checkbox" className="cursor-pointer" />
+            <input
+              type="checkbox"
+              className="cursor-pointer"
+              onChange={(e) => setSameAccounts(e.target.value)}
+            />
             <span className="text-gray-600">مرا به خاطر بسپار</span>
           </div>
           <button

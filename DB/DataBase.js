@@ -2467,6 +2467,6 @@ export const usersData = [
 
 export const userPanelColorsData = [
   ["#2396f3", "#e8f5ff", "#84c8ff"],
-  ["#33c998", "rgba(230, 255, 240, 0.7)", "rgb(234, 255, 242)"],
+  ["#33c998", "rgb(230 255 240)", "rgb(171 255 203)"],
   ["#8000ff", "rgba(225, 208, 255, 0.7)", "#9289ff"],
 ];
