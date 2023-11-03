@@ -174,14 +174,6 @@ const StepThree = ({ next, prev, data }) => {
               شامل کاراکتر های خاص (نماد ها ) باشد
             </span>
           </div>
-          <div className="flex justify-start gap-3 items-center mt-3">
-            <input
-              type="checkbox"
-              className="cursor-pointer"
-              onChange={(e) => setSameAccounts(e.target.value)}
-            />
-            <span className="text-gray-600">مرا به خاطر بسپار</span>
-          </div>
           <button
             type="submit"
             className="w-full bg-green-400 text-white py-2 rounded-md cursor-pointer mt-4 h-12"
