@@ -33,6 +33,16 @@ const StepOne = ({ next, data }) => {
           <div>
             <Field
               className="shadow-md border w-full rounded-md outline-none pr-3 my-4 h-12 dark:text-gray-700"
+              placeholder="شماره تلفن"
+              name="phoneNumber"
+            />
+            <span className="text-[#ff3434] font-bold">
+              <ErrorMessage name="phoneNumber" />
+            </span>
+          </div>
+          {/* <div>
+            <Field
+              className="shadow-md border w-full rounded-md outline-none pr-3 my-4 h-12 dark:text-gray-700"
               placeholder="نام"
               name="fullName"
             />
@@ -59,7 +69,7 @@ const StepOne = ({ next, data }) => {
             <span className="text-[#ff3434] font-bold">
               <ErrorMessage name="barthDate" />
             </span>
-          </div>
+          </div> */}
 
           <button
             type="submit"

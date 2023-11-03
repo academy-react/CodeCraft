@@ -24,15 +24,10 @@ const StepThree = ({ next, prev, data }) => {
   };
   const [passwordInputIsHidden, setPasswordInputIsHidden] = useState(true);
   const [sholdeSaveUser, setSholdeSaveUser] = useState(false);
-  const [sameAccounts, setSameAccounts] = useState(false);
 
   const handleSubmit = (values) => {
     if (!contextData.users.some((user) => user.email === values.email)) {
-      if (sholdeSaveUser) {
-        values.id = contextData.users.length + 1;
-        values.profile = "images/icons/profile.jpg";
-      }
-      next(values, true, sameAccounts === "on" ? true : false);
+      next(values);
     } else {
       contextData.handleShowSnack("ایمیل شما قبلا استفاده شده", 3000, "error");
     }

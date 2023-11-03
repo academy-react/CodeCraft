@@ -262,18 +262,18 @@ const MainContextProvider = ({ children }) => {
     }
     // users
 
-    const getUsers = async function () {
-      const response = await axios.get("http://localhost:8000/users");
-      return response;
-    };
-    const prevUsersInSystem = useLocalStorage("users", "", true);
-    getUsers().then((data) =>
-      setUsers(
-        data.data.filter((user) =>
-          prevUsersInSystem.some((prevUser) => prevUser.id === user.id)
-        )
-      )
-    );
+    // const getUsers = async function () {
+    //   const response = await axios.get("http://localhost:8000/users");
+    //   return response;
+    // };
+    // const prevUsersInSystem = useLocalStorage("users", "", true);
+    // getUsers().then((data) =>
+    //   setUsers(
+    //     data.data.filter((user) =>
+    //       prevUsersInSystem.some((prevUser) => prevUser.id === user.id)
+    //     )
+    //   )
+    // );
 
     // bookList
     const bookList = useLocalStorage("BookList", "", true);

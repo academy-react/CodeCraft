@@ -8,41 +8,88 @@ import React, { useContext, useState } from "react";
 import HomeButton from "@/components/common/HomeButton";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import axios from "axios";
+import { values } from "lodash";
 
 const signup = () => {
   const contextData = useContext(mainContext);
   const router = useRouter();
+  const [recoveryCode, setRecoveryCode] = useState(0);
 
   const [data, setData] = useState({
-    fullName: "",
-    barthDate: "",
-    nationalCode: "",
     phoneNumber: "",
     email: "",
     password: "",
   });
   const steps = [
     <StepOne next={handleNextStep} data={data} />,
-    <StepSecend next={handleNextStep} prev={handlePrevStep} data={data} />,
+    <StepSecend
+      next={handleNextStep}
+      prev={handlePrevStep}
+      data={data}
+      recoveryCode={recoveryCode}
+    />,
     <StepThree next={handleNextStep} prev={handlePrevStep} data={data} />,
   ];
   const [currentStep, setCurrentStep] = useState(0);
 
-  function handleNextStep(newData, finalStep = false, sameAccounts = false) {
+  async function handleNextStep(newData) {
     setData((prev) => ({ ...prev, ...newData }));
-    if (finalStep) {
-      newData.id = contextData.users.length + 1;
-      newData.profile = "images/icons/profile.jpg";
-      const newUsers = [...contextData.users, newData];
-      if (sameAccounts) {
-        contextData.setUsers(newUsers);
-        console.log(newUsers);
-        useLocalStorage("users", newUsers, true);
+    if (currentStep === 2) {
+      const result = await axios.post(
+        "https://api-academy.iran.liara.run/api/Sign/Register",
+        {
+          phoneNumber: newData.phoneNumber,
+          gmail: newData.email,
+          password: newData.password,
+        }
+      );
+      console.log(result.data.success);
+      if (result.data.success) {
+        contextData.handleLoginUser(true);
+        router.replace("/Authentication/login");
+      } else {
+        contextData.handleShowSnack(
+          "ایمیل یا شماره تماس شما قبلا ثبت شده",
+          3000,
+          "error"
+        );
       }
-      axios.post("http://localhost:8000/users", newData);
-      contextData.handleLoginUser(true);
-      router.replace("/Authentication/login");
+
       return;
+    } else if (currentStep === 1) {
+      const data = {
+        phoneNumber: newData.phoneNumber,
+        verifyCode: newData.code,
+      };
+      const result = await axios.post(
+        "https://api-academy.iran.liara.run/api/Sign/VerifyMessage",
+        data
+      );
+      if (result.data.success) {
+        contextData.handleShowSnack("کد وارد شده صحیح بود", 3000, "seccess");
+      } else {
+        contextData.handleShowSnack("کد وارد شده صحیح نبود", 3000, "error");
+        return;
+      }
+    } else if (currentStep === 0) {
+      try {
+        const result = await axios.post(
+          `https://api-academy.iran.liara.run/api/Sign/SendVerifyMessage?PhoneNumber=${newData.phoneNumber}`
+        );
+        if (result.data.success) {
+          contextData.handleShowSnack(
+            "کد برای شما فرستاده شد",
+            3000,
+            "seccess"
+          );
+        } else {
+          contextData.handleShowSnack("لطفا دوباره تلاش کنید", 3000, "error");
+          return;
+        }
+      } catch (error) {
+        contextData.handleShowSnack("لطفا دوباره تلاش کنید", 3000, "error");
+        return;
+      }
     }
     setCurrentStep((prev) => prev + 1);
   }

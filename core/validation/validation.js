@@ -27,28 +27,29 @@ export const loginValidationPhone = yup.object({
 // sign up => step one
 
 export const signUpStepOne = yup.object({
-  fullName: yup
-    .string("نام شما معتبر نمی باشد")
-    .min(3, "نام شما کوتاه است")
-    .required("لطفاً نام خود را وارد کنید"),
-  barthDate: yup
-    .string("تاریخ تولد معتبر نمی باشد")
-    .required("لطفاً تاریخ تولد خود را وارد کنید"),
-});
-
-// sign up => step two
-
-export const signUpStepTwo = yup.object({
-  nationalCode: yup
-    .string("کد ملی شما معتبر نمی باشد")
-    .matches(/^[0-9]{10}$/, "کد ملی شما معتبر نمی باشد")
-    .required("لطفا  کد ملی خود را وارد کنید"),
+  // fullName: yup
+  //   .string("نام شما معتبر نمی باشد")
+  //   .min(3, "نام شما کوتاه است")
+  //   .required("لطفاً نام خود را وارد کنید"),
+  // barthDate: yup
+  //   .string("تاریخ تولد معتبر نمی باشد")
+  //   .required("لطفاً تاریخ تولد خود را وارد کنید"),
   phoneNumber: yup
     .string("شماره تماس باید به صورت عدد باشد")
     .min(11, "شماره تماس شما باید 11 رقم باشد")
     .max(11)
     .matches(/^09\d{9}$/, "شماره تماس شما معتبر نمی باشد")
     .required("لطفا شماره تماس خود را وارد کنید"),
+});
+
+// sign up => step two
+
+export const signUpStepTwo = yup.object({
+  // nationalCode: yup
+  //   .string("کد ملی شما معتبر نمی باشد")
+  //   .matches(/^[0-9]{10}$/, "کد ملی شما معتبر نمی باشد")
+  //   .required("لطفا  کد ملی خود را وارد کنید"),
+  code: yup.string("کد وارد شده معتبر نیست").required("لطفا کد را وارد کنید"),
 });
 
 // sign up => step three => in the current page

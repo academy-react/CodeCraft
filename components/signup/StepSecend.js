@@ -1,13 +1,31 @@
+import mainContext from "@/context/mainContext";
 import { signUpStepTwo } from "@/core/validation/validation";
+import axios from "axios";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import Link from "next/link";
-import React from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import * as yup from "yup";
 
 const StepSecend = ({ next, prev, data }) => {
   const handleSubmit = (values) => {
     next(values);
   };
+  const [remainingTime, setRemainingTime] = useState(60);
+  const number = useRef(60);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      number.current -= 1;
+      setRemainingTime(number.current);
+    }, 1000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
+  const contextData = useContext(mainContext);
+
   return (
     <Formik
       initialValues={data}
@@ -22,7 +40,7 @@ const StepSecend = ({ next, prev, data }) => {
             </div>
             <h1 className="text-3xl font-bold text-center mb-8">مرحله دوم</h1>
           </div>
-          <div>
+          {/* <div>
             <Field
               className="shadow-md border w-full rounded-md outline-none pr-3 my-4 h-12 dark:text-gray-700"
               placeholder="کد ملی"
@@ -31,17 +49,41 @@ const StepSecend = ({ next, prev, data }) => {
             <span className="text-[#ff3434] font-bold">
               <ErrorMessage name="nationalCode" />
             </span>
-          </div>
-          <div>
+          </div> */}
+          <div className="relative">
             <Field
               className="shadow-md border w-full rounded-md outline-none pr-3 my-4 h-12 dark:text-gray-700"
-              placeholder="شماره تلفن"
-              name="phoneNumber"
+              placeholder="کد"
+              name="code"
             />
+            {number.current >= 0 ? (
+              <span className="block absolute top-7 left-3 h-8 text-[#2395f3] cursor-pointer">
+                {number.current}
+              </span>
+            ) : (
+              <button
+                className="absolute top-6 left-3 text-[#2396f3] rounded-md cursor-pointer w-16 h-8 text-sm"
+                onClick={async () => {
+                  await axios.post(
+                    `https://api-academy.iran.liara.run/api/Sign/SendVerifyMessage?PhoneNumber=${data.phoneNumber}`
+                  );
+                  contextData.handleShowSnack(
+                    "کد برای شما فرستاده شد",
+                    3000,
+                    "seccess"
+                  );
+                  number.current = 60;
+                  setRemainingTime(number.current);
+                }}
+              >
+                ارسال مجدد
+              </button>
+            )}
             <span className="text-[#ff3434] font-bold">
-              <ErrorMessage name="phoneNumber" />
+              <ErrorMessage name="code" />
             </span>
           </div>
+
           <button
             type="submit"
             className="w-full bg-green-400 text-white py-2 rounded-md cursor-pointer mt-4 h-12"
