@@ -8,6 +8,7 @@ import {
 import useLocalStorage from "@/hooks/useLocalStorage";
 import axios from "axios";
 import { ErrorMessage, Field, Form, Formik } from "formik";
+import { jwtDecode } from "jwt-decode";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
@@ -35,15 +36,16 @@ const Login = () => {
       password: values.password,
       rememberMe: values.rememberMe ? true : false,
     };
-    const userData = await axios.post(
+    const result = await axios.post(
       "https://api-academy.iran.liara.run/api/Sign/Login",
       newValue
     );
-    if (userData.data.success) {
+    if (result.data.success) {
+      const userData = jwtDecode(result.data.token);
       values.rememberMe === true
-        ? useLocalStorage("userData", userData.data, true)
+        ? useLocalStorage("userData", userData, true)
         : null;
-      contextData.setCurrentUser(userData.data);
+      contextData.setCurrentUser(userData);
       contextData.handleLoginUser(true);
       router.replace("/");
     } else {
