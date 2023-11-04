@@ -39,18 +39,13 @@ const Login = () => {
       "https://api-academy.iran.liara.run/api/Sign/Login",
       newValue
     );
-    if (userData.data.seccess) {
-      // const currentUser = AllUsers.find((user) => {
-      //   return user.password === values.password && user.email === values.email;
-      // });
-      // useLocalStorage("userData", currentUser, true);
-      // contextData.setCurrentUser(currentUser);
-      // contextData.handleLoginUser(true);
-      // contextData.handleShowSnack("ورود با موفقیت انجام شد", 2000, "seccess");
-      // setTimeout(() => {
-      //   router.replace("/");
-      // }, 5000);
-      alert("yes");
+    if (userData.data.success) {
+      values.rememberMe === true
+        ? useLocalStorage("userData", userData.data, true)
+        : null;
+      contextData.setCurrentUser(userData.data);
+      contextData.handleLoginUser(true);
+      router.replace("/");
     } else {
       contextData.handleShowSnack(
         "ایمیل یا رمز عبور شما اشتباه است",
@@ -95,8 +90,8 @@ const Login = () => {
                     />
                   </div>
                   <div
-                    className={`absolute top-[4px] h-[80%] w-[30px] bg-white rounded-full z-[1] ${
-                      loginWithEmail ? "right-[6px]" : "left-[6px]"
+                    className={`absolute top-[4px] h-[80%] w-[30px] bg-white rounded-full z-[1] transition-all ${
+                      loginWithEmail ? "left-[44px]" : "left-[6px]"
                     }`}
                   ></div>
                 </button>
