@@ -29,8 +29,12 @@ const ForgetPass = () => {
   ];
   const [currentStep, setCurrentStep] = useState(0);
 
-  function handleNextStep(newData, secendStep = false, finalStep = false) {
-    if (finalStep) {
+  async function handleNextStep(
+    newData,
+    secendStep = false,
+    finalStep = false
+  ) {
+    if (currentStep === 2) {
       const currentUserIndex = contextData.users.findIndex(
         (user) => user.email === data.email
       );
@@ -47,7 +51,7 @@ const ForgetPass = () => {
       router.replace("/Authentication/login");
       return;
     }
-    if (secendStep) {
+    if (currentStep === 1) {
       if (Number(newData.code) === recoveryCode) {
         setCurrentStep((prev) => prev + 1);
       } else {
@@ -56,15 +60,25 @@ const ForgetPass = () => {
       return;
     }
 
-    const userWithEmailExists = contextData.users.some(
-      (user) => user.email === newData.email
+    // const userWithEmailExists = contextData.users.some(
+    //   (user) => user.email === newData.email
+    // );
+    // if (userWithEmailExists) {
+    //   setData(newData);
+    //   handleSendCode();
+    //   setCurrentStep((prev) => prev + 1);
+    // } else {
+    //   contextData.handleShowSnack("ایمیل شما پیدا نشد", 3000, "error");
+    // }
+    const result = await axios.post(
+      "https://api-academy.iran.liara.run/api/Sign/ForgetPassword?email=" +
+        newData.email
     );
-    if (userWithEmailExists) {
+    if (result.data.success) {
       setData(newData);
-      handleSendCode();
       setCurrentStep((prev) => prev + 1);
     } else {
-      contextData.handleShowSnack("ایمیل شما پیدا نشد", 3000, "error");
+      contextData.handleShowSnack("ایمیل شما یافت نشد", 3000, "error");
     }
   }
 

@@ -10,9 +10,7 @@ const StepOne = ({ next }) => {
     next(values);
   };
   if (typeof window !== "undefined") {
-    window.addEventListener("load", () => {
-      console.log(farstField);
-    });
+    window.addEventListener("load", () => {});
   }
 
   return (
