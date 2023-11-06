@@ -41,11 +41,15 @@ const Login = () => {
       newValue
     );
     if (result.data.success) {
-      const userData = jwtDecode(result.data.token);
+      const userData = await axios.get(
+        "https://api-academy.iran.liara.run/api/SharePanel/GetProfileInfo",
+        { headers: { Authorization: `Bearer ${result.data.token}` } }
+      );
       values.rememberMe === true
-        ? useLocalStorage("userData", userData, true)
+        ? useLocalStorage("userData", userData.data, true)
         : null;
-      contextData.setCurrentUser(userData);
+      useLocalStorage("token", result.data.token, true);
+      contextData.setCurrentUser(userData.data);
       contextData.handleLoginUser(true);
       router.replace("/");
     } else {
