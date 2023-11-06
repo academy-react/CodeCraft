@@ -29,11 +29,7 @@ const ForgetPass = () => {
   ];
   const [currentStep, setCurrentStep] = useState(0);
 
-  async function handleNextStep(
-    newData,
-    secendStep = false,
-    finalStep = false
-  ) {
+  async function handleNextStep(newData) {
     if (currentStep === 2) {
       const currentUserIndex = contextData.users.findIndex(
         (user) => user.email === data.email
@@ -70,15 +66,19 @@ const ForgetPass = () => {
     // } else {
     //   contextData.handleShowSnack("ایمیل شما پیدا نشد", 3000, "error");
     // }
-    const result = await axios.post(
-      "https://api-academy.iran.liara.run/api/Sign/ForgetPassword?email=" +
-        newData.email
-    );
-    if (result.data.success) {
-      setData(newData);
-      setCurrentStep((prev) => prev + 1);
-    } else {
-      contextData.handleShowSnack("ایمیل شما یافت نشد", 3000, "error");
+    try {
+      const result = await axios.post(
+        "https://api-academy.iran.liara.run/api/Sign/ForgetPassword?email=" +
+          newData.email
+      );
+      if (result.data.success) {
+        setData(newData);
+        setCurrentStep((prev) => prev + 1);
+      } else {
+        contextData.handleShowSnack("ایمیل شما یافت نشد", 3000, "error");
+      }
+    } catch (error) {
+      contextData.handleShowSnack(error.message, 3000, "error");
     }
   }
 
