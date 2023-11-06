@@ -9,6 +9,8 @@ import HomeButton from "@/components/common/HomeButton";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import axios from "axios";
 import { values } from "lodash";
+import { SendVerifyMessage, VerifyMessage } from "@/core/services/API/message";
+import { Register } from "@/core/services/API/authentication";
 
 const signup = () => {
   const contextData = useContext(mainContext);
@@ -35,15 +37,12 @@ const signup = () => {
   async function handleNextStep(newData) {
     setData((prev) => ({ ...prev, ...newData }));
     if (currentStep === 2) {
-      const result = await axios.post(
-        "https://api-academy.iran.liara.run/api/Sign/Register",
-        {
-          phoneNumber: newData.phoneNumber,
-          gmail: newData.email,
-          password: newData.password,
-        }
-      );
-      console.log(result.data.success);
+      const userInfo = {
+        phoneNumber: newData.phoneNumber,
+        gmail: newData.email,
+        password: newData.password,
+      };
+      const result = await Register(userInfo);
       if (result.data.success) {
         contextData.handleLoginUser(true);
         router.replace("/Authentication/login");
@@ -61,10 +60,7 @@ const signup = () => {
         phoneNumber: newData.phoneNumber,
         verifyCode: newData.code,
       };
-      const result = await axios.post(
-        "https://api-academy.iran.liara.run/api/Sign/VerifyMessage",
-        data
-      );
+      const result = await VerifyMessage(data);
       if (result.data.success) {
         contextData.handleShowSnack("کد وارد شده صحیح بود", 3000, "seccess");
       } else {
@@ -73,9 +69,7 @@ const signup = () => {
       }
     } else if (currentStep === 0) {
       try {
-        const result = await axios.post(
-          `https://api-academy.iran.liara.run/api/Sign/SendVerifyMessage?PhoneNumber=${newData.phoneNumber}`
-        );
+        const result = await SendVerifyMessage(newData.phoneNumber);
         if (result.data.success) {
           contextData.handleShowSnack(
             "کد برای شما فرستاده شد",

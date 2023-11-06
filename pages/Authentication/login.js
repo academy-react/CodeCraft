@@ -1,5 +1,7 @@
 import HomeButton from "@/components/common/HomeButton";
 import mainContext from "@/context/mainContext";
+import { loginUser } from "@/core/services/API/authentication";
+import { getUserInfo } from "@/core/services/API/user";
 import {
   loginValidation,
   loginValidationEmail,
@@ -17,34 +19,20 @@ import { LuAtSign } from "react-icons/lu";
 
 const Login = () => {
   const [passwordInputIsHidden, setPasswordInputIsHidden] = useState(true);
-  const [AllUsers, setAllUsers] = useState([]);
   const [loginWithEmail, setLoginWithEmail] = useState(false);
 
   const contextData = useContext(mainContext);
   const router = useRouter();
 
-  useEffect(() => {
-    const getUsers = async () => {
-      const AllUsers = await axios.get("http://localhost:8000/users");
-      setAllUsers(AllUsers.data);
-    };
-    getUsers();
-  }, []);
   const handleSubmit = async (values, events) => {
     const newValue = {
       phoneOrGmail: values.phone ? values.phone : values.email,
       password: values.password,
       rememberMe: values.rememberMe ? true : false,
     };
-    const result = await axios.post(
-      "https://api-academy.iran.liara.run/api/Sign/Login",
-      newValue
-    );
+    const result = await loginUser(newValue);
     if (result.data.success) {
-      const userData = await axios.get(
-        "https://api-academy.iran.liara.run/api/SharePanel/GetProfileInfo",
-        { headers: { Authorization: `Bearer ${result.data.token}` } }
-      );
+      const userData = await getUserInfo(result.data.token);
       values.rememberMe === true
         ? useLocalStorage("userData", userData.data, true)
         : null;
