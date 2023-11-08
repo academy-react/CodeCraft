@@ -4,7 +4,7 @@ import {
   LatestNewsData,
   newsAndArticlesData,
 } from "@/DB/DataBase";
-import Course from "@/components/common/Course";
+import Course from "@/components/common/CourseCards/Course";
 import Rodemap from "@/components/common/Rodemap";
 import Comments from "@/components/common/Comments";
 import Layout from "@/layout/Layout";

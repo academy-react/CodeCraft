@@ -1,7 +1,7 @@
 import { CoursesPageFilters } from "@/DB/DataBase";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
-import Course from "@/components/common/Course";
+import Course from "@/components/common/CourseCards/Course";
 import * as _ from "lodash";
 import { Stack } from "@mui/system";
 import { Pagination, PaginationItem } from "@mui/material";

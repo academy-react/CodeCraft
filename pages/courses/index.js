@@ -3,7 +3,7 @@ import Layout from "@/layout/Layout";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 import CourseIndexFilter from "@/components/IndexPage/IndexCourse/CourseIndexFilter";
-import Course from "@/components/common/Course";
+import Course from "@/components/common/CourseCards/Course";
 import { RiFilter2Fill } from "react-icons/ri";
 import * as _ from "lodash";
 import { Stack } from "@mui/system";

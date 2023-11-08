@@ -1,5 +1,5 @@
 import Snack from "@/components/common/Snack";
-import Course from "@/components/common/Course";
+import Course from "@/components/common/CourseCards/Course";
 import mainContext from "@/context/mainContext";
 import Layout from "@/layout/Layout";
 import React, { useContext, useEffect, useState } from "react";

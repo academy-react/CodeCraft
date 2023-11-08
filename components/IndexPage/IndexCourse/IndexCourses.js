@@ -5,7 +5,10 @@ import Course from "../../common/Course";
 import CourseIndexFilter from "./CourseIndexFilter";
 import Link from "next/link";
 
-const IndexCourses = () => {
+const IndexCourses = (props) => {
+  const [CoursesData, setCoursesData] = useState(
+    props.CoursesData.courseFilterDtos
+  );
   const [filterSelected, setFilterSelected] = useState(1);
   const [mainCourses, setMainCourses] = useState(CoursesData);
   const [showAll, setShowAll] = useState(false);

@@ -25,7 +25,7 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { FaInstagramSquare, FaTwitterSquare } from "react-icons/fa";
-import Course from "@/components/common/Course";
+import Course from "@/components/common/CourseCards/Course";
 import Comments from "@/components/common/Comments";
 import AddComment from "@/components/common/AddComment";
 import { format } from "date-fns";

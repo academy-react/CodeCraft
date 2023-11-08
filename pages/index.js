@@ -20,8 +20,10 @@ import Categori from "@/components/IndexPage/Categori";
 import mainContext from "@/context/mainContext";
 import { useRouter } from "next/router";
 import useFetch from "@/hooks/useFetch";
+import { getAllCourses } from "@/core/services/API/course";
 
-export default function Home() {
+export default function Home(props) {
+  console.log(props);
   const contextData = useContext(mainContext);
   const router = useRouter();
 
@@ -102,7 +104,7 @@ export default function Home() {
             <Categori {...item} key={item.id} index={index} />
           ))}
         </div>
-        <IndexCourses />
+        <IndexCourses CoursesData={props.coursesData} />
         <LastArticles />
         <LatestNews />
         <Teacher />
@@ -111,4 +113,15 @@ export default function Home() {
       </Layout>
     </div>
   );
+}
+
+export async function getServerSideProps() {
+  const getCourses = async () => {
+    return await getAllCourses();
+  };
+  return {
+    props: {
+      coursesData: await getCourses().then((data) => data.data),
+    },
+  };
 }
