@@ -40,6 +40,7 @@ const MainContextProvider = ({ children }) => {
     return useLocalStorage("userData", "", true);
   });
   const [latestTransactions, setLatestTransactions] = useState([]);
+  const [token, setToken] = useState("");
 
   const router = useRouter();
 
@@ -260,20 +261,6 @@ const MainContextProvider = ({ children }) => {
     } else {
       setWaitingPageCourses([]);
     }
-    // users
-
-    // const getUsers = async function () {
-    //   const response = await axios.get("http://localhost:8000/users");
-    //   return response;
-    // };
-    // const prevUsersInSystem = useLocalStorage("users", "", true);
-    // getUsers().then((data) =>
-    //   setUsers(
-    //     data.data.filter((user) =>
-    //       prevUsersInSystem.some((prevUser) => prevUser.id === user.id)
-    //     )
-    //   )
-    // );
 
     // bookList
     const bookList = useLocalStorage("BookList", "", true);
@@ -295,13 +282,9 @@ const MainContextProvider = ({ children }) => {
     } else {
       setLatestTransactions([]);
     }
-
-    // All Courses
-    const getCourses = async () => {
-      const response = await axios.get("http://localhost:8000/Courses");
-      return response;
-    };
-    getCourses().then((data) => setAllCourses(data.data));
+    // token
+    const token = useLocalStorage("token");
+    setToken(token);
   }, []);
   useEffect(() => {
     document.querySelector("html").classList = theme;

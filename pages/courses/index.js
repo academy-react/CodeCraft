@@ -1,4 +1,4 @@
-import { CoursesData, CoursesPageFilters } from "@/DB/DataBase";
+import { CoursesPageFilters } from "@/DB/DataBase";
 import Layout from "@/layout/Layout";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
@@ -16,16 +16,18 @@ import {
 } from "@mui/material";
 import FilterBar from "@/components/common/FilterBar";
 import mainContext from "@/context/mainContext";
-import Rodemap from "@/components/common/Rodemap";
 import { CiViewColumn, CiViewList } from "react-icons/ci";
-import useFetch from "@/hooks/useFetch";
 import { IoIosAddCircle } from "react-icons/io";
 import { HiClock } from "react-icons/hi";
+import { editCourses, getAllCourses } from "@/core/services/API/course";
 
 const Courses = (props) => {
   const contextData = useContext(mainContext);
   const itemsPerPage = useRef();
 
+  const [CoursesData, setCoursesData] = useState(
+    props.coursesData.courseFilterDtos
+  );
   const [filterSelected, setFilterSelected] = useState(7);
   const [mainCourses, setMainCourses] = useState(CoursesData);
   const [courseSearch, setCourseSearch] = useState("");
@@ -47,7 +49,6 @@ const Courses = (props) => {
   });
   const [priceRange, setPriceRange] = useState([minPriceRange, maxPriceRange]);
   const [selectedView, setSelectedView] = useState("col");
-  const [windowSize, setWindowSize] = useState(0);
   const maxSpenddingTime = Math.max(
     ...CoursesData.map((course) => course.spenddingTime)
   );
@@ -151,29 +152,39 @@ const Courses = (props) => {
     setCoursesData(newCourses);
     setMainCourses(newCourses);
   };
-
-  useEffect(() => {
-    setPage(1);
-  }, [
-    selectedCategori,
-    selectedStatus,
-    selectedTeacher,
-    spenddingTime,
-    priceRange,
-    courseSearch,
-    filterSelected,
-    recordingStatusSelected,
-  ]);
-
-  if (typeof window !== "undefined") {
-    useEffect(() => {
-      setWindowSize(window.innerWidth);
-      window.addEventListener("resize", () => {
-        setIsFilterBarOpen(false);
-        setWindowSize(window.innerWidth);
+  const handleLikeCourse = (courseID) => {
+    if (contextData.userIsLogin) {
+      const newCourseData = CoursesData.map((course) => {
+        if (course.courseId === courseID) {
+          if (!course.userIsLiked) {
+            course.likeCount += 1;
+          } else {
+            course.likeCount -= 1;
+          }
+          course.userIsLiked = !course.userIsLiked;
+        }
+        return course;
       });
-    }, []);
-  }
+      setCoursesData(newCourseData);
+      editCourses(newCourseData, contextData.token);
+    } else {
+      router.replace("/Authentication/login");
+    }
+  };
+
+  // useEffect(() => {
+  //   setPage(1);
+  // }, [
+  //   selectedCategori,
+  //   selectedStatus,
+  //   selectedTeacher,
+  //   spenddingTime,
+  //   priceRange,
+  //   courseSearch,
+  //   filterSelected,
+  //   recordingStatusSelected,
+  // ]);
+
   return (
     <>
       <Layout hidden={props.userpanel ? true : false}>
@@ -268,7 +279,7 @@ const Courses = (props) => {
                       onClick={() => setSelectedView("col")}
                     >
                       <CiViewColumn
-                        size={`${windowSize >= 768 ? "25" : "20"}`}
+                        size={`${contextData.windowWidth >= 768 ? "25" : "20"}`}
                       />
                     </button>
                     <button
@@ -277,7 +288,9 @@ const Courses = (props) => {
                       }`}
                       onClick={() => setSelectedView("row")}
                     >
-                      <CiViewList size={`${windowSize >= 768 ? "25" : "20"}`} />
+                      <CiViewList
+                        size={`${contextData.windowWidth >= 768 ? "25" : "20"}`}
+                      />
                     </button>
                   </div>
                 ) : null}
@@ -334,17 +347,19 @@ const Courses = (props) => {
                       : "grid-cols-1"
                   } gap-5 mt-5`}
                 >
-                  {mainCourses.length ? (
-                    mainCourses
-                      .slice(page * pageSize - pageSize, page * pageSize)
-                      .map((course) => (
-                        <Course
-                          {...course}
-                          key={course.id}
-                          view={selectedView}
-                          handleDeleteCoursesData={handleDeleteCoursesData}
-                        />
-                      ))
+                  {CoursesData.length ? (
+                    CoursesData.slice(
+                      page * pageSize - pageSize,
+                      page * pageSize
+                    ).map((course) => (
+                      <Course
+                        {...course}
+                        key={course.id}
+                        view={selectedView}
+                        handleDeleteCoursesData={handleDeleteCoursesData}
+                        handleLikeCourse={handleLikeCourse}
+                      />
+                    ))
                   ) : (
                     <div className="w-full flex justify-center xl:col-span-4 md:col-span-2">
                       <img
@@ -523,9 +538,13 @@ const Courses = (props) => {
 };
 
 export async function getServerSideProps(context) {
+  const getCourses = async () => {
+    return await getAllCourses();
+  };
   return {
     props: {
       searchParam: context.query.categori || null,
+      coursesData: await getCourses().then((data) => data.data),
     },
   };
 }

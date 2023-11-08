@@ -18,43 +18,26 @@ import { Box, CircularProgress, Typography } from "@mui/material";
 
 const Course = (props) => {
   const contextData = useContext(mainContext);
-  const router = useRouter();
-
-  const teacher = TopTeachersData.find(
-    (teacher) => teacher?.fullName === props.teacher
-  );
-
-  let [courseLikes, setCourseLikes] = useState(props.like);
-  const [hasLike, setHasLike] = useState(false);
-
-  const handleLikeCourse = () => {
-    if (!hasLike && contextData.userIsLogin) {
-      setCourseLikes((prev) => prev + 1);
-      setHasLike(true);
-    } else if (!contextData.userIsLogin) {
-      router.replace("/Authentication/login");
-    }
-  };
 
   const studentSpace =
-    ((props.maxStudents - props.students) / props.maxStudents) * 100;
+    ((props.maxStudents - props.currentRegistrants) / props.maxStudents) * 100;
 
   return (
     <>
       {props.view === "col" || contextData.windowWidth < 640 ? (
         <div
-          className="col-span-1 rounded-xl relative h-[400px] overflow-hidden shadow-2xl text-white"
+          className="col-span-1 rounded-xl relative h-[400px] overflow-hidden shadow-2xl text-white dark:shadow-xl dark:shadow-zinc-600"
           data-aos={props.index ? "fade-up" : null}
           data-aos-delay={+props.index * 100}
         >
           <div className="w-full relative h-[60%]">
             <img
-              src={props.image}
-              alt={props.title}
-              className="w-full h-full"
+              src={props.tumbImageAddress || "/images/noCourseimg.jpg"}
+              alt={"مشکلی پیش امده"}
+              className="w-full h-full text-center leading-[200px] text-3xl text-black dark:text-white"
             />
             <div className="absolute bottom-[50%] translate-y-[50%] left-[50%] translate-x-[-50%] bg-white/90 rounded-full h-[200px]  shadow-2xl shadow-gray-400">
-              {props.bookList ? (
+              {props.userFavorite ? (
                 <Box sx={{ position: "relative", display: "inline-flex" }}>
                   <CircularProgress
                     variant="determinate"
@@ -93,58 +76,54 @@ const Course = (props) => {
           <div className="absolute top-0 pt-1 w-full flex justify-between px-3">
             <span
               className={`${
-                props.status === "اسان"
+                props.levelName === "اسان"
                   ? "bg-green-400"
-                  : props.status === "متوسط"
+                  : props.levelName === "متوسط"
                   ? "bg-[#2396f3]"
                   : "bg-black"
               } h-6 px-2 py-1 text-xs rounded-lg border-white`}
             >
-              {props.status}
+              {props.levelName}
             </span>
             <button
               className={`${
-                hasLike
+                props.userIsLiked
                   ? "bg-red-500 border-red-500"
                   : "bg-black/30 border-black/30"
               } p-2 rounded-lg  hover:border-red-500 border-2 transition-colors lg:text-base text-sm shadow-2xl flex gap-1 items-center`}
-              onClick={handleLikeCourse}
+              onClick={() => props.handleLikeCourse(props.courseId)}
             >
               <div>
                 <AiFillHeart
-                  className={`h-5 ${hasLike ? "text-white" : "text-red-500"}`}
+                  className={`h-5 ${
+                    props.userIsLiked ? "text-white" : "text-red-500"
+                  }`}
                 />
               </div>
-              <span className="h-5 text-xs">{courseLikes}</span>
+              <span className="h-5 text-xs">{props.likeCount}</span>
             </button>
           </div>
           <div className="bg-white dark:bg-black dark:text-white h-[42%] rounded-xl absolute bottom-0 w-full text-[#4c5c84] p-2">
             <div className="flex justify-between items-center text-gray-500 dark:text-white gap-1">
               <span
                 className={`text-xs px-2 py-1 shadow-md text-white rounded-md ${
-                  props.recordingstatus ? "bg-green-500" : "bg-black"
+                  props.statusName ? "bg-green-500" : "bg-black"
                 }`}
               >
-                {props.recordingstatus ? "در حال ضبط" : "تمام شده"}
+                {props.statusName}
               </span>
               <div className="flex justify-center gap-2 items-center">
-                <AiFillClockCircle />
-                <span className="text-base">{props.spenddingTime} ماه</span>
+                <span className="text-xs">{props.classRoomName}</span>
               </div>
             </div>
             <Link href={`/courses/${String(props.id)}`}>
-              <h1 className="text-2xl text-center hover:text-[#2196f3] cursor-pointer transition-colors">
+              <h1 className="text-2xl text-center hover:text-[#2196f3] cursor-pointer transition-colors dark:text-white">
                 {props.title}
               </h1>
             </Link>
-            <div className="w-full flex gap-2 items-center justify-center relative left-2 pb-1 border-b border-[#cccccc]">
-              <img
-                src={teacher?.image}
-                alt="profile"
-                className="h-10 dark:bg-black rounded-full"
-              />
+            <div className="w-full flex gap-2 items-center justify-center relative left-2 pb-1 border-b border-[#cccccc] py-3">
               <span className="text-base hover:text-[#2196f3] transition-colors cursor-pointer">
-                {props.teacher}
+                {props.teacherName}
               </span>
             </div>
             <div
@@ -180,16 +159,16 @@ const Course = (props) => {
               <div className="flex justify-center items-center text-[#4c5c84] sm:gap-5 gap-2">
                 <div className="flex justify-center items-center dark:text-white">
                   <PiStudentFill />
-                  <span>{props.students}</span>
+                  <span>{props.currentRegistrants}</span>
                 </div>
                 <div className="flex justify-center items-center gap-1 bg-[#ffca58] px-1 rounded-md text-[#d89f24]">
                   <AiTwotoneStar />
-                  <span className="text-white">{props.star}</span>
+                  <span className="text-white">{props.courseRate}</span>
                 </div>
               </div>
               <div className="flex gap-1">
                 <span>
-                  {props.myList || props.bookList ? (
+                  {props.myList || props.userFavorite ? (
                     <button
                       className="bg-red-500 px-2 py-1 rounded-md text-white flex gap-2 sm:text-base text-sm"
                       onClick={() => {
@@ -204,7 +183,7 @@ const Course = (props) => {
                       <MdDelete size={23} color={"white"} className="block" />
                     </button>
                   ) : (
-                    props.price
+                    props.cost + " تومان"
                   )}
                 </span>
               </div>
@@ -219,12 +198,12 @@ const Course = (props) => {
         >
           <div className="relative ">
             <img
-              src={props.image}
-              alt={props.title}
-              className="w-[300px] rounded-md shadow-md md:m-0 mx-auto"
+              src={props.tumbImageAddress || "/images/noCourseimg.jpg"}
+              alt={"مشکلی پیش امده"}
+              className="w-[300px] rounded-md shadow-md md:m-0 mx-auto text-black dark:text-white text-2xl text-center"
             />
             <div className="absolute bottom-[50%] translate-y-[50%] left-[50%] translate-x-[-50%] bg-white/90 rounded-full h-[100px] shadow-2xl shadow-gray-400">
-              {props.bookList ? (
+              {props.userFavorite ? (
                 <Box sx={{ position: "relative", display: "inline-flex" }}>
                   <CircularProgress
                     variant="determinate"
@@ -264,26 +243,25 @@ const Course = (props) => {
             <div className="pt-1 w-full flex justify-between items-center mb-1">
               <span
                 className={`${
-                  props.status === "اسان"
+                  props.levelName === "اسان"
                     ? "bg-green-400"
-                    : props.status === "متوسط"
+                    : props.levelName === "متوسط"
                     ? "bg-[#2396f3]"
                     : "bg-black"
                 } h-6 px-2 py-1 text-xs rounded-lg border-white border `}
               >
-                {props.status}
+                {props.levelName}
               </span>
               <div className="flex justify-between items-center text-gray-500 dark:text-white gap-5">
                 <span
                   className={`text-xs px-2 shadow-sm border border-white shadow-white py-1 text-white rounded-md ${
-                    props.recordingstatus ? "bg-green-500" : "bg-black"
+                    props.statusName ? "bg-green-500" : "bg-black"
                   }`}
                 >
-                  {props.recordingstatus ? "در حال ضبط" : "تمام شده"}
+                  {props.statusName}
                 </span>
                 <div className="flex justify-center gap-2 items-center">
-                  <AiFillClockCircle />
-                  <span className="text-base">{props.spenddingTime} ماه</span>
+                  <span className="text-base">{props.classRoomName}</span>
                 </div>
               </div>
               <div className="flex justify-center gap-3 items-center">
@@ -301,45 +279,52 @@ const Course = (props) => {
                   )}
                 </div>
                 <button
-                  className="bg-black/30 p-2 rounded-lg hover:text-[#2196f3] hover:bg-white hover:border-red-500 border-2 border-white transition-colors lg:text-base text-sm shadow-2xl flex gap-1 items-center"
-                  onClick={handleLikeCourse}
+                  className={`${
+                    props.userIsLiked
+                      ? "bg-red-500 border-red-500"
+                      : "bg-black/30 border-white/30"
+                  } p-2 rounded-lg  hover:border-red-500 border-2 transition-colors lg:text-base text-sm shadow-2xl flex gap-1 items-center`}
+                  onClick={() => props.handleLikeCourse(props.courseId)}
                 >
-                  <AiFillHeart color="red" className="h-5" />
-                  <span className="h-5 text-xs">{courseLikes}</span>
+                  <div>
+                    <AiFillHeart
+                      className={`h-5 ${
+                        props.userIsLiked ? "text-white" : "text-red-500"
+                      }`}
+                    />
+                  </div>
+                  <span className="h-5 text-xs">{props.likeCount}</span>
                 </button>
               </div>
             </div>
             <div className="w-full flex gap-2 items-center justify-start relative left-2 pb-1 border-b border-[#cccccc]">
-              <img
-                src={teacher?.image}
-                alt="profile"
-                className="h-10 dark:bg-black rounded-full"
-              />
               <span className="text-base hover:text-[#2196f3] transition-colors cursor-pointer text-gray-500 dark:text-gray-300">
-                {props.teacher}
+                {props.teacherName}
               </span>
             </div>
             <div className="flex justify-between items-center mt-2">
-              <h1 className="text-black text-2xl">{props.title}</h1>
+              <h1 className="text-black text-2xl dark:text-white">
+                {props.title}
+              </h1>
               <div className="flex justify-center items-center text-[#4c5c84] gap-5">
                 <div className="flex justify-center items-center dark:text-white">
                   <PiStudentFill />
-                  <span>{props.students}</span>
+                  <span>{props.currentRegistrants}</span>
                 </div>
                 <div className="flex justify-center items-center gap-1 bg-[#ffca58] px-1 rounded-md text-[#d89f24]">
                   <AiTwotoneStar />
-                  <span className="text-white">{props.star}</span>
+                  <span className="text-white">{props.courseRate}</span>
                 </div>
               </div>
             </div>
-            <p className="text-gray-400 dark:text-gray-200">
-              {props.desceiption}
+            <p className="text-gray-400 dark:text-gray-200 my-4 w-full">
+              {props.describe}
             </p>
             <div className="flex justify-between items-center h-10">
               <div className="flex justify-start text-black items-center md:gap-5 gap-1">
                 <div className="flex gap-1">
                   <span className="text-black dark:text-white lg:inline hidden">
-                    {props.price}
+                    {props.cost + "تومان"}
                   </span>
                 </div>
                 {props.Discount && !props.myList ? (
