@@ -21,9 +21,10 @@ import mainContext from "@/context/mainContext";
 import { useRouter } from "next/router";
 import useFetch from "@/hooks/useFetch";
 import { getAllCourses } from "@/core/services/API/course";
+import { getAllCategories, getAllReports } from "@/core/services/API/Home";
+import HeroSection from "@/components/IndexPage/HeroSection";
 
 export default function Home(props) {
-  console.log(props);
   const contextData = useContext(mainContext);
   const router = useRouter();
 
@@ -48,59 +49,12 @@ export default function Home(props) {
     }
   };
 
-  const categoris = [...new Set(CoursesData.map((course) => course.categori))];
-
   return (
     <div>
       <Layout>
-        <div
-          className=" w-full md:h-[480px] h-[580px] relative sm:rounded-lg text-white"
-          data-aos="zoom-in-up"
-          style={{
-            backgroundImage: "url(/images/herosection.jpg)",
-            backgroundRepeat: "repeat",
-          }}
-        >
-          <div className="absolute top-0 w-full h-full bg-[#4b9fffcc] sm:rounded-lg">
-            <div className="mx-auto md:w-[700px] w-full h-full">
-              <h1 className="w-full text-center mt-14 text-4xl font-bold">
-                آموزش آنلاین ویدیویی، مهارت برای اشتغال
-              </h1>
-              <p className="text-center mt-5 text-xl">
-                برای حرفه‌ای شدن حرفه‌ای آموزش ببینید
-              </p>
-              <div className="w-full flex justify-center gap-4 mt-5">
-                <Link href={"/courses"}>
-                  <button className="border border-white text-white bg-transparent px-3 py-1 hover:bg-white rounded-md transition-all duration-150 hover:-translate-y-[2px] hover:text-blue-400">
-                    شروع یادگیری
-                  </button>
-                </Link>
-                <Link href={"/about"}>
-                  <button className="border border-white text-white bg-transparent px-3 py-1 hover:bg-white rounded-md transition-all duration-150 hover:-translate-y-[2px] hover:text-blue-400">
-                    درباره ما
-                  </button>
-                </Link>
-              </div>
-              <div className="w-full flex justify-center mt-9 gap-5 flex-wrap flex-row">
-                {AboutUsData.map((item) => {
-                  const { id, icon: IconComponent, number, text } = item;
-                  return (
-                    <>
-                      <Aboutus
-                        key={number}
-                        icon={<IconComponent size="40px" />}
-                        number={number}
-                        text={text}
-                      />
-                    </>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </div>
+        <HeroSection AboutUsData={props.Aboutus} />
         <div className="grid lg:grid-cols-3 grid-cols-2 gap-5 mt-9">
-          {CategoriData.map((item, index) => (
+          {props.categoris.slice(0, 6).map((item, index) => (
             <Categori {...item} key={item.id} index={index} />
           ))}
         </div>
@@ -119,9 +73,17 @@ export async function getServerSideProps() {
   const getCourses = async () => {
     return await getAllCourses();
   };
+  const getCategories = async () => {
+    return await getAllCategories();
+  };
+  const getAboutUsData = async () => {
+    return await getAllReports();
+  };
   return {
     props: {
       coursesData: await getCourses().then((data) => data.data),
+      categoris: await getCategories().then((data) => data.data),
+      Aboutus: await getAboutUsData().then((data) => data.data),
     },
   };
 }
