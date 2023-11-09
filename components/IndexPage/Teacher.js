@@ -102,7 +102,7 @@ const Teacher = (props) => {
                       {teacher.fullName || "teacher"}
                     </h1>
                     {teacher.linkdinProfileLink ? (
-                      <div className="flex w-full md:justify-right justify-center gap-3 items-center text-[#2396f3] mt-5">
+                      <div className="flex w-full md:justify-start justify-center gap-3 items-center text-[#2396f3] mt-5">
                         <BsLinkedin size={"50px"} className="cursor-pointer" />
                         <span className="text-xl">
                           {teacher.linkdinProfileLink}@
