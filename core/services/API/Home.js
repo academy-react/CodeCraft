@@ -19,3 +19,11 @@ export const getAllReports = async () => {
     return error;
   }
 };
+
+export const getAllNews = async () => {
+  try {
+    return await axios.get(`https://api-academy.iran.liara.run/api/News`);
+  } catch (error) {
+    return error;
+  }
+};

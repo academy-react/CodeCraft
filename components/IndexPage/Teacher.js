@@ -1,15 +1,13 @@
-import React, { useState } from "react";
-import { AiFillFacebook, AiOutlineUser } from "react-icons/ai";
-import { MdKeyboardArrowLeft } from "react-icons/md";
+import { AiOutlineUser } from "react-icons/ai";
+import { MdKeyboardArrowLeft, MdOutlineVideoLibrary } from "react-icons/md";
 import { EffectCoverflow, EffectFade, Navigation } from "swiper/modules";
 import "swiper/css/effect-coverflow";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { TopTeachersData } from "@/DB/DataBase";
 import { BsLinkedin } from "react-icons/bs";
-import { FaInstagramSquare, FaTwitterSquare } from "react-icons/fa";
+import { RiArticleLine } from "react-icons/ri";
+import CountUp from "react-countup";
 
-const Teacher = () => {
-  const handleNext = () => {};
+const Teacher = (props) => {
   return (
     <div className="mt-14">
       <div className="justify-between px-4 items-center mb-9 xl:hidden flex">
@@ -57,12 +55,17 @@ const Teacher = () => {
               modules={[EffectCoverflow]}
               className="mySwiper rounded-xl"
             >
-              {TopTeachersData.map((teacher) => (
+              {props.teachers.map((teacher) => (
                 <SwiperSlide key={teacher.id}>
                   <div className="relative">
-                    <img src={teacher.image} className="w-full h-[250px]" />
+                    <img
+                      src={
+                        teacher.pictureAddress || "/images/icons/profile.jpg"
+                      }
+                      className="w-full h-[250px]"
+                    />
                     <div className="bg-white dark:bg-[#2e2e2e] text-[#333] dark:text-white text-center leading-3 text-lg p-4">
-                      {teacher.fullName}
+                      {teacher.fullName || "teacher"}
                     </div>
                   </div>
                 </SwiperSlide>
@@ -79,26 +82,69 @@ const Teacher = () => {
             modules={[Navigation]}
             className="mySwiper mySwiper !absolute top-0 right-0 h-full w-full"
           >
-            {TopTeachersData.map((teacher) => (
+            {props.teachers.map((teacher) => (
               <SwiperSlide
-                className="w-full h-full p-10 px-20 rounded-lg overflow-hidden bg-[#eaecf1] dark:bg-black overflow-y-auto"
+                className="w-full h-full p-10 px-20 rounded-lg overflow-hidden md:bg-[#eaecf1] dark:bg-black overflow-y-auto"
                 key={teacher.id}
               >
-                <img
-                  src={teacher.image}
-                  alt=""
-                  className="rounded-full h-20 w-20 mx-auto border-4 border-white mb-3"
-                />
-                <h1 className="text-black dark:text-white text-2xl text-center">
-                  {teacher.fullName}
-                </h1>
-                <p className="text-gray-500 dark:text-gray-300 md:text-lg text-sm mt-3">
+                <div className="w-full h-full md:flex gap-5">
+                  <div className="md:h-full md:w-[200px] h-[100px] w-[100px] md:rounded-xl rounded-full overflow-hidden mx-auto">
+                    <img
+                      src={
+                        teacher.pictureAddress || "/images/icons/profile.jpg"
+                      }
+                      alt="profile"
+                      className=" h-full object-contain bg-white mx-auto border-4 border-white mb-3"
+                    />
+                  </div>
+                  <div className="md:w-[80%] w-full mt-5">
+                    <h1 className="text-black dark:text-white text-4xl md:text-right text-center">
+                      {teacher.fullName || "teacher"}
+                    </h1>
+                    {teacher.linkdinProfileLink ? (
+                      <div className="flex w-full md:justify-right justify-center gap-3 items-center text-[#2396f3] mt-5">
+                        <BsLinkedin size={"50px"} className="cursor-pointer" />
+                        <span className="text-xl">
+                          {teacher.linkdinProfileLink}@
+                        </span>
+                      </div>
+                    ) : null}
+                    <div className="flex justify-center gap-44 mt-5 w-full text-[#2396f3]">
+                      <div>
+                        <span className="text-center text-3xl block text-gray-700 ">
+                          دوره ها
+                        </span>
+                        <MdOutlineVideoLibrary size={130} color="" />
+                        <span className="text-4xl block text-center">
+                          <CountUp
+                            start={0}
+                            end={teacher.courseCounts}
+                            duration={4}
+                          />
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-center text-3xl block text-gray-700 ">
+                          مقالات
+                        </span>
+                        <RiArticleLine size={130} color="" />
+                        <span className="text-4xl block text-center">
+                          <CountUp
+                            start={0}
+                            end={teacher.newsCount}
+                            duration={4}
+                          />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* <p className="text-gray-500 dark:text-gray-300 md:text-lg text-sm mt-3">
                   {teacher.description}
                 </p>
                 <div className="flex text-[#2396f0]  justify-center mt-5 gap-5">
-                  {teacher.medias.includes("linkdin") ? (
-                    <BsLinkedin size={"30px"} className="cursor-pointer" />
-                  ) : null}
+                  
                   {teacher.medias.includes("instagram") ? (
                     <FaInstagramSquare
                       size={"30px"}
@@ -111,7 +157,7 @@ const Teacher = () => {
                   {teacher.medias.includes("facebook") ? (
                     <AiFillFacebook size={"30px"} className="cursor-pointer" />
                   ) : null}
-                </div>
+                </div> */}
               </SwiperSlide>
             ))}
           </Swiper>

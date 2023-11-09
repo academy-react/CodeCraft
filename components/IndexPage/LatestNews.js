@@ -8,13 +8,13 @@ import { Keyboard, Pagination, Navigation } from "swiper/modules";
 import { LatestNewsData } from "@/DB/DataBase";
 import Link from "next/link";
 
-const LatestNews = () => {
+const LatestNews = (props) => {
   const [farstArticleHover, setFarstArticleHover] = useState(false);
   const [SecendArticleHover, setSecendArticleHover] = useState(false);
   const [ThardArticleHover, setThardArticleHover] = useState(false);
   const [windowSize, setWindowSize] = useState(0);
 
-  const topNews = [...LatestNewsData].sort((a, b) => b.star - a.star);
+  const topNews = [...props.data].sort((a, b) => b.currentRate - a.currentRate);
   useEffect(() => {
     if (typeof window !== undefined) {
       setWindowSize(window.innerWidth);
@@ -59,7 +59,7 @@ const LatestNews = () => {
               }}
             >
               <img
-                src={item.image}
+                src={item.currentImageAddressTumb}
                 alt={item.title}
                 className="rounded-lg w-full h-full"
               />
@@ -88,19 +88,21 @@ const LatestNews = () => {
           ))}
         </div>
         <div
-          className="col-span-2 md:row-span-2 row-span-3 rounded-lg relative cursor-pointer hover:bg-slate-50"
+          className={`${
+            !props.data > 1 ? "col-span-2" : "col-span-3"
+          } md:row-span-2 row-span-3 rounded-lg relative cursor-pointer hover:bg-slate-50 h-[700px]`}
           data-aos="flip-right"
         >
           <img
-            src={topNews[0].image}
-            alt={topNews[0].title}
+            src={topNews[0]?.currentImageAddressTumb}
+            alt={topNews[0]?.title}
             className="w-full h-full rounded-lg z-[8]"
           />
           <div className="absolute w-full h-full top-0 right-0 z-[9] hover:bg-[#2196f3] hover:opacity-20 rounded-lg"></div>
           <div className="absolute md:bottom-10 bottom-0 right-0 shadow-sm shadow-white rounded-lg p-5 md:w-[80%] w-full h-28 md:bg-white bg-white/80 md:dark:bg-black dark:bg-black/80 transition-all md:hover:bottom-20 z-10">
             <span className="text-[#2196f3] text-xl">اخبار</span>
             <p className="text-[#55648a] md:text-4xl text-xl dark:text-white">
-              {topNews[0].title}
+              {topNews[0]?.title}
             </p>
           </div>
         </div>
@@ -124,7 +126,7 @@ const LatestNews = () => {
             }}
           >
             <img
-              src={item.image}
+              src={item.currentImageAddressTumb}
               alt={item.title}
               className="rounded-lg w-full h-full"
             />
@@ -168,7 +170,7 @@ const LatestNews = () => {
             <SwiperSlide className="h-[300px] w-full" key={item.id}>
               <div className="relative h-full">
                 <img
-                  src={item.image}
+                  src={item.currentImageAddressTumb}
                   alt={item.title}
                   className="w-full h-full"
                 />

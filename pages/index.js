@@ -1,12 +1,6 @@
 import Layout from "@/layout/Layout";
 import { useContext, useEffect, useState } from "react";
-import Aboutus from "@/components/IndexPage/Aboutus";
-import {
-  AboutUsData,
-  CategoriData,
-  CoursesData,
-  TopCommentData,
-} from "@/DB/DataBase";
+import { TopCommentData } from "@/DB/DataBase";
 import IndexCourses from "@/components/IndexPage/IndexCourse/IndexCourses";
 import LastArticles from "@/components/IndexPage/LastArticles";
 import LatestNews from "@/components/IndexPage/LatestNews";
@@ -15,13 +9,15 @@ import TopCmments from "@/components/IndexPage/TopCmments";
 import Rating from "@/components/IndexPage/IndexRating/Rating";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import Link from "next/link";
 import Categori from "@/components/IndexPage/Categori";
 import mainContext from "@/context/mainContext";
 import { useRouter } from "next/router";
-import useFetch from "@/hooks/useFetch";
-import { getAllCourses } from "@/core/services/API/course";
-import { getAllCategories, getAllReports } from "@/core/services/API/Home";
+import { getAllCourses, getAllTeachers } from "@/core/services/API/course";
+import {
+  getAllCategories,
+  getAllNews,
+  getAllReports,
+} from "@/core/services/API/Home";
 import HeroSection from "@/components/IndexPage/HeroSection";
 
 export default function Home(props) {
@@ -49,6 +45,11 @@ export default function Home(props) {
     }
   };
 
+  const articles = props.News.filter(
+    (news) => news.newsCatregoryName === "مقالات"
+  );
+  const news = props.News.filter((news) => news.newsCatregoryName === "اخبار");
+
   return (
     <div>
       <Layout>
@@ -59,9 +60,9 @@ export default function Home(props) {
           ))}
         </div>
         <IndexCourses CoursesData={props.coursesData} />
-        <LastArticles />
-        <LatestNews />
-        <Teacher />
+        {articles.length ? <LastArticles data={articles} /> : null}
+        {news.length ? <LatestNews data={news} /> : null}
+        <Teacher teachers={props.teachers} />
         <TopCmments comments={comments} />
         <Rating handleSubmit={handleSubmit} />
       </Layout>
@@ -79,11 +80,19 @@ export async function getServerSideProps() {
   const getAboutUsData = async () => {
     return await getAllReports();
   };
+  const getNews = async () => {
+    return await getAllNews();
+  };
+  const getTeachers = async () => {
+    return await getAllTeachers();
+  };
   return {
     props: {
       coursesData: await getCourses().then((data) => data.data),
       categoris: await getCategories().then((data) => data.data),
       Aboutus: await getAboutUsData().then((data) => data.data),
+      News: await getNews().then((data) => data.data.news),
+      teachers: await getTeachers().then((data) => data.data),
     },
   };
 }

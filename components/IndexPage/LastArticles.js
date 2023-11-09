@@ -8,13 +8,16 @@ import "swiper/css/navigation";
 import { Keyboard, Pagination, Navigation } from "swiper/modules";
 import Link from "next/link";
 
-const LastArticles = () => {
+const LastArticles = (props) => {
   const [farstArticleHover, setFarstArticleHover] = useState(false);
   const [SecendArticleHover, setSecendArticleHover] = useState(false);
   const [ThardArticleHover, setThardArticleHover] = useState(false);
   const [windowSize, setWindowSize] = useState(0);
 
-  const topArticles = [...LatestArticlesData].sort((a, b) => b.star - a.star);
+  const topArticles = [...props.data].sort(
+    (a, b) => b.currentRate - a.currentRate
+  );
+
   useEffect(() => {
     if (typeof window !== undefined) {
       setWindowSize(window.innerWidth);
@@ -38,13 +41,15 @@ const LastArticles = () => {
       </div>
       <div className="hidden lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-3 grid-cols-1 md:grid-row-2 lg:grid-row-3 grid-rows-2 gap-5 h-full sm:grid">
         <div
-          className="col-span-2 md:row-span-2 row-span-3 rounded-lg relative cursor-pointer hover:bg-slate-50"
+          className={`${
+            !props.data > 1 ? "col-span-2" : "col-span-3"
+          } md:row-span-2 row-span-3 rounded-lg relative cursor-pointer hover:bg-slate-50 h-[700px]`}
           data-aos="fade-left"
         >
           <img
-            src={topArticles[0].image}
+            src={topArticles[0].currentImageAddressTumb}
             alt={topArticles[0].title}
-            className="w-full h-full rounded-lg z-[8]"
+            className="w-full object-center h-full rounded-lg z-[8]"
           />
           <div className="absolute w-full h-full top-0 right-0 z-[9] hover:bg-[#2196f3] hover:opacity-20 rounded-lg"></div>
           <div className="absolute md:bottom-10 bottom-0 md:-right-8 right-0 shadow-sm rounded-lg p-5 md:w-[80%] w-full h-28 md:bg-white bg-white/80 md:dark:bg-black shadow-white dark:bg-black/80 transition-all md:hover:bottom-20 z-10">
@@ -75,7 +80,7 @@ const LastArticles = () => {
             }}
           >
             <img
-              src={item.image}
+              src={item.currentImageAddressTumb}
               alt={item.title}
               className="rounded-lg w-full h-full"
             />
@@ -121,7 +126,7 @@ const LastArticles = () => {
             <SwiperSlide className="h-[300px] w-full" key={item.id}>
               <div className="relative h-full">
                 <img
-                  src={item.image}
+                  src={item.currentImageAddressTumb}
                   alt={item.title}
                   className="w-full h-full"
                 />
