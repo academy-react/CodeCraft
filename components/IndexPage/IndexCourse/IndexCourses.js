@@ -72,14 +72,16 @@ const IndexCourses = (props) => {
             <Course {...course} index={index} key={course.id} view="col" />
           ))}
       </div>
-      <div className="w-full flex items-center justify-center mt-14">
-        <button
-          className="rounded-full bg-[#2396f3] text-white mx-auto px-4 py-2"
-          onClick={() => setShowAll((prev) => !prev)}
-        >
-          {showAll ? "مشاهده کمتر" : "مشاهده بیشتر"}
-        </button>
-      </div>
+      {mainCourses.length > 8 ? (
+        <div className="w-full flex items-center justify-center mt-14">
+          <button
+            className="rounded-full bg-[#2396f3] text-white mx-auto px-4 py-2"
+            onClick={() => setShowAll((prev) => !prev)}
+          >
+            {showAll ? "مشاهده کمتر" : "مشاهده بیشتر"}
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 };
