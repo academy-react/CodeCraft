@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const getAllCourses = async (query = "", token) => {
+export const getAllCourses = async (query = "") => {
   try {
     return await axios.get(
       `https://api-academy.iran.liara.run/api/Home/GetCoursesWithPagination${query}`

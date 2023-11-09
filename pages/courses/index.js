@@ -538,8 +538,10 @@ const Courses = (props) => {
 };
 
 export async function getServerSideProps(context) {
+  const paramstart = context.req.url.indexOf("?");
+  const querys = context.req.url.slice(paramstart, context.req.url.length);
   const getCourses = async () => {
-    return await getAllCourses();
+    return await getAllCourses(querys);
   };
   return {
     props: {
