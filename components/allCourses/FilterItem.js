@@ -32,16 +32,16 @@ const FilterItem = ({ selected, data, setSelected, title }) => {
         {data.map((item) => (
           <span
             className="flex gap-3 items-start justify-start my-3"
-            // key={item.id}
+            key={item}
           >
             <input
               onClick={() => setSelected(item)}
               type="radio"
-              // name={item}
+              name={item}
               className="h-5"
-              // checked={selected === item}
+              checked={selected === item}
             />
-            {/* <span className="block h-5">{item}</span> */}
+            <span className="block h-5">{item}</span>
           </span>
         ))}
       </form>

@@ -28,93 +28,99 @@ const FilterBar = ({
   handleResetFilters,
   CoursesData,
 }) => {
-  const allCategori = CoursesData.map((course) => {
-    return course.categori;
+  const allCategori = [];
+  CoursesData.map((course) => {
+    course.technologyList.split(",").map((technology) => {
+      allCategori.push(technology);
+    });
   });
+
   const categori = [...new Set(allCategori)];
 
   const allTeachers = CoursesData.map((course) => {
-    return course.teacher;
+    return course.teacherName;
   });
   const teachers = [...new Set(allTeachers)];
 
   const allStatuses = CoursesData.map((course) => {
-    return course.status;
+    return course.levelName;
   });
   const Statuses = [...new Set(allStatuses)];
 
   const applyFilter = () => {
     let updatedData = CoursesData;
 
-    if (selectedCategori !== "همه") {
-      updatedData = updatedData.filter(
-        (course) => course.categori === selectedCategori
-      );
-    }
+    // if (selectedCategori !== "همه") {
+    //   updatedData = updatedData.filter((course) =>
+    //     course.technologyList
+    //       .split(",")
+    //       .some((item) => item === selectedCategori)
+    //   );
+    // }
 
-    if (selectedStatus !== "همه") {
-      updatedData = updatedData.filter(
-        (course) => course.status === selectedStatus
-      );
-    }
-    if (selectedTeacher !== "همه") {
-      updatedData = updatedData.filter(
-        (course) => course.teacher === selectedTeacher
-      );
-    }
+    // if (selectedStatus !== "همه") {
+    //   updatedData = updatedData.filter(
+    //     (course) => course.status === selectedStatus
+    //   );
+    // }
+    // if (selectedTeacher !== "همه") {
+    //   updatedData = updatedData.filter(
+    //     (course) => course.teacher === selectedTeacher
+    //   );
+    // }
 
-    updatedData = updatedData.filter((course) => {
-      return (
-        course.spenddingTime >= spenddingTime[0] &&
-        course.spenddingTime <= spenddingTime[1]
-      );
-    });
+    // updatedData = updatedData.filter((course) => {
+    //   return (
+    //     course.spenddingTime >= spenddingTime[0] &&
+    //     course.spenddingTime <= spenddingTime[1]
+    //   );
+    // });
 
-    updatedData = updatedData.filter((course) => {
-      return (
-        course.nuumberprice >= priceRange[0] &&
-        course.nuumberprice <= priceRange[1]
-      );
-    });
+    // updatedData = updatedData.filter((course) => {
+    //   return (
+    //     course.nuumberprice >= priceRange[0] &&
+    //     course.nuumberprice <= priceRange[1]
+    //   );
+    // });
 
-    if (courseSearch) {
-      updatedData = updatedData.filter((course) =>
-        _.includes(course.title.toLowerCase(), courseSearch.toLowerCase())
-      );
-    }
-    if (recordingStatusSelected !== "همه") {
-      updatedData = updatedData.filter(
-        (course) =>
-          (course.recordingStatus ? "در حال ضبط" : "تمام شده") ===
-          recordingStatusSelected
-      );
-    }
+    // if (courseSearch) {
+    //   updatedData = updatedData.filter((course) =>
+    //     _.includes(course.title.toLowerCase(), courseSearch.toLowerCase())
+    //   );
+    // }
+    // if (recordingStatusSelected !== "همه") {
+    //   updatedData = updatedData.filter(
+    //     (course) =>
+    //       (course.recordingStatus ? "در حال ضبط" : "تمام شده") ===
+    //       recordingStatusSelected
+    //   );
+    // }
 
-    if (filterSelected === 2) {
-      updatedData = _.orderBy(updatedData, "star", "desc");
-    }
-    if (filterSelected === 3) {
-      updatedData = _.orderBy(updatedData, "students", "desc");
-    }
-    if (filterSelected === 4) {
-      updatedData = updatedData.filter((course) => course.Discount);
-    }
-    if (filterSelected === 5) {
-      updatedData = _.orderBy(updatedData, "nuumberprice", "asc");
-    }
-    if (filterSelected === 6) {
-      updatedData = _.orderBy(updatedData, "nuumberprice", "desc");
-    }
-    if (filterSelected === 7) {
-      updatedData = updatedData.sort(
-        (a, b) => new Date(a.start) - new Date(b.start)
-      );
-    }
-    if (filterSelected === 8) {
-      updatedData = updatedData.sort(
-        (a, b) => new Date(b.start) - new Date(a.start)
-      );
-    }
+    // if (filterSelected === 2) {
+    //   updatedData = _.orderBy(updatedData, "star", "desc");
+    // }
+    // if (filterSelected === 3) {
+    //   updatedData = _.orderBy(updatedData, "students", "desc");
+    // }
+    // if (filterSelected === 4) {
+    //   updatedData = updatedData.filter((course) => course.Discount);
+    // }
+    // if (filterSelected === 5) {
+    //   updatedData = _.orderBy(updatedData, "nuumberprice", "asc");
+    // }
+    // if (filterSelected === 6) {
+    //   updatedData = _.orderBy(updatedData, "nuumberprice", "desc");
+    // }
+    // if (filterSelected === 7) {
+    //   updatedData = updatedData.sort(
+    //     (a, b) => new Date(a.start) - new Date(b.start)
+    //   );
+    // }
+    // if (filterSelected === 8) {
+    //   updatedData = updatedData.sort(
+    //     (a, b) => new Date(b.start) - new Date(a.start)
+    //   );
+    // }
     changeMainCourses(updatedData);
   };
   useEffect(() => {
