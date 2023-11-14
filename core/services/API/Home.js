@@ -3,7 +3,7 @@ import axios from "axios";
 export const getAllCategories = async () => {
   try {
     return await axios.get(
-      `https://api-academy.iran.liara.run/api/Home/GetTechnologies`
+      `https://acadapi.etacorealtime.ir/api/Home/GetTechnologies`
     );
   } catch (error) {
     return error;
@@ -13,7 +13,7 @@ export const getAllCategories = async () => {
 export const getAllReports = async () => {
   try {
     return await axios.get(
-      `https://api-academy.iran.liara.run/api/Home/LandingReport`
+      `https://acadapi.etacorealtime.ir/api/Home/LandingReport`
     );
   } catch (error) {
     return error;
@@ -22,7 +22,7 @@ export const getAllReports = async () => {
 
 export const getAllNews = async () => {
   try {
-    return await axios.get(`https://api-academy.iran.liara.run/api/News`);
+    return await axios.get(`https://acadapi.etacorealtime.ir/api/News`);
   } catch (error) {
     return error;
   }

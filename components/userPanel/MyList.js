@@ -1,7 +1,7 @@
 import { CoursesPageFilters } from "@/DB/DataBase";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
-import Course from "@/components/common/CourseCards/Course";
+import Course from "@/components/common/Course";
 import { RiFilter2Fill } from "react-icons/ri";
 import * as _ from "lodash";
 import { Stack } from "@mui/system";

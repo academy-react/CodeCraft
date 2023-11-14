@@ -3,7 +3,7 @@ import axios from "axios";
 export const getAllCourses = async (query = "") => {
   try {
     return await axios.get(
-      `https://api-academy.iran.liara.run/api/Home/GetCoursesWithPagination${query}`
+      `https://acadapi.etacorealtime.ir/api/Home/GetCoursesWithPagination${query}`
     );
   } catch (error) {
     return error;
@@ -13,21 +13,37 @@ export const getAllCourses = async (query = "") => {
 export const getAllTeachers = async () => {
   try {
     return await axios.get(
-      `https://api-academy.iran.liara.run/api/Home/GetTeachers`
+      `https://acadapi.etacorealtime.ir/api/Home/GetTeachers`
     );
   } catch (error) {
     return error;
   }
 };
 
-export const editCourses = async (newCourses, token) => {
+export const likeCourse = async (courseID, token) => {
   try {
-    return await axios.put(
-      `https://api-academy.iran.liara.run/api/Course`,
-      newCourses,
+    return await axios.post(
+      `https://acadapi.etacorealtime.ir/api/Course/AddCourseLike`,
+      { courseId: courseID },
       {
         headers: {
-          Authorization: token,
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  } catch (error) {
+    return error;
+  }
+};
+
+export const addToFavorite = async (courseID, token) => {
+  try {
+    return await axios.post(
+      `https://acadapi.etacorealtime.ir/api/Course/AddCourseFavorite`,
+      { courseId: courseID },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
       }
     );

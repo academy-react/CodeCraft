@@ -165,25 +165,6 @@ const Courses = (props) => {
     setCoursesData(newCourses);
     setMainCourses(newCourses);
   };
-  const handleLikeCourse = (courseID) => {
-    if (contextData.userIsLogin) {
-      const newCourseData = CoursesData.map((course) => {
-        if (course.courseId === courseID) {
-          if (!course.userIsLiked) {
-            course.likeCount += 1;
-          } else {
-            course.likeCount -= 1;
-          }
-          course.userIsLiked = !course.userIsLiked;
-        }
-        return course;
-      });
-      setCoursesData(newCourseData);
-      editCourses(newCourseData, contextData.token);
-    } else {
-      router.replace("/Authentication/login");
-    }
-  };
 
   useEffect(() => {
     const newCourseLevelValue =
@@ -373,7 +354,6 @@ const Courses = (props) => {
                         key={course.id}
                         view={selectedView}
                         handleDeleteCoursesData={handleDeleteCoursesData}
-                        handleLikeCourse={handleLikeCourse}
                       />
                     ))
                   ) : (

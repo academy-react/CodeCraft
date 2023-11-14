@@ -283,7 +283,7 @@ const MainContextProvider = ({ children }) => {
       setLatestTransactions([]);
     }
     // token
-    const token = useLocalStorage("token");
+    const token = useLocalStorage("token", "", true);
     setToken(token);
   }, []);
   useEffect(() => {
@@ -335,6 +335,7 @@ const MainContextProvider = ({ children }) => {
     latestTransactions,
     allCourses,
     setAllCourses,
+    token,
   };
 
   return (

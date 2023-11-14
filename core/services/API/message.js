@@ -3,7 +3,7 @@ import axios from "axios";
 export const SendVerifyMessage = async (phoneNumber) => {
   try {
     return await axios.post(
-      `https://api-academy.iran.liara.run/api/Sign/SendVerifyMessage?PhoneNumber=${phoneNumber}`
+      `https://acadapi.etacorealtime.ir/api/Sign/SendVerifyMessage?PhoneNumber=${phoneNumber}`
     );
   } catch (error) {
     return error;
@@ -13,7 +13,7 @@ export const SendVerifyMessage = async (phoneNumber) => {
 export const VerifyMessage = async (data) => {
   try {
     return await axios.post(
-      "https://api-academy.iran.liara.run/api/Sign/VerifyMessage",
+      "https://acadapi.etacorealtime.ir/api/Sign/VerifyMessage",
       data
     );
   } catch (error) {

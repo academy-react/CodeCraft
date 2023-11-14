@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { FaPercentage } from "react-icons/fa";
 import { PiStudentFill } from "react-icons/pi";
 import {
@@ -15,13 +15,32 @@ import axios from "axios";
 import { MdDelete } from "react-icons/md";
 import { BsBookmarkPlus, BsFillBookmarkCheckFill } from "react-icons/bs";
 import { Box, CircularProgress, Typography } from "@mui/material";
+import { addToFavorite, likeCourse } from "@/core/services/API/course";
 
 const Course = (props) => {
   const contextData = useContext(mainContext);
+  const [courseLike, setCourseLike] = useState(props.likeCount);
+  const [userIsLiked, setUserIsLiked] = useState(props.userIsLiked);
+  const [userFavorite, setuserFavorite] = useState(props.userFavorite);
 
   const studentSpace =
     ((props.maxStudents - props.currentRegistrants) / props.maxStudents) * 100;
 
+  const handleLikeCourse = () => {
+    setCourseLike((prev) => (prev += 1));
+    setUserIsLiked(true);
+    likeCourse(props.courseId, contextData.token);
+  };
+
+  const handleAddFavorite = () => {
+    setuserFavorite(true);
+    addToFavorite(props.courseId, contextData.token);
+  };
+
+  useEffect(() => {
+    if (courseLike !== props.likeCount) {
+    }
+  }, [courseLike]);
   return (
     <>
       {props.view === "col" || contextData.windowWidth < 640 ? (
@@ -37,7 +56,7 @@ const Course = (props) => {
               className="w-full h-full text-center leading-[200px] text-3xl text-black dark:text-white"
             />
             <div className="absolute bottom-[50%] translate-y-[50%] left-[50%] translate-x-[-50%] bg-white/90 rounded-full h-[200px]  shadow-2xl shadow-gray-400">
-              {props.userFavorite ? (
+              {props.waitingPage ? (
                 <Box sx={{ position: "relative", display: "inline-flex" }}>
                   <CircularProgress
                     variant="determinate"
@@ -87,20 +106,23 @@ const Course = (props) => {
             </span>
             <button
               className={`${
-                props.userIsLiked
+                userIsLiked
                   ? "bg-red-500 border-red-500"
                   : "bg-black/30 border-black/30"
               } p-2 rounded-lg  hover:border-red-500 border-2 transition-colors lg:text-base text-sm shadow-2xl flex gap-1 items-center`}
-              onClick={() => props.handleLikeCourse(props.courseId)}
+              onClick={() => {
+                userIsLiked ||
+                  handleLikeCourse(props.courseId, contextData.token);
+              }}
             >
               <div>
                 <AiFillHeart
                   className={`h-5 ${
-                    props.userIsLiked ? "text-white" : "text-red-500"
+                    userIsLiked ? "text-white" : "text-red-500"
                   }`}
                 />
               </div>
-              <span className="h-5 text-xs">{props.likeCount}</span>
+              <span className="h-5 text-xs">{courseLike}</span>
             </button>
           </div>
           <div className="bg-white dark:bg-black dark:text-white h-[42%] rounded-xl absolute bottom-0 w-full text-[#4c5c84] p-2">
@@ -133,13 +155,11 @@ const Course = (props) => {
             >
               <div className="flex justify-between items-center absolute top-[90px] right-0 w-full px-3">
                 <div className="w-[35px] h-[35px] bg-gray-100 rounded-full shadow-md shadow-gray-400 justify-center items-center flex cursor-pointer hover:bg-gray-200 transition-colors duration-300">
-                  {!contextData.bookList.some(
-                    (course) => course.id === props.id
-                  ) ? (
+                  {!userFavorite ? (
                     <BsBookmarkPlus
                       size={20}
                       className="text-black"
-                      onClick={() => contextData.handleAddToBookList(props.id)}
+                      onClick={handleAddFavorite}
                     />
                   ) : (
                     <BsFillBookmarkCheckFill size={20} className="text-black" />
@@ -168,7 +188,7 @@ const Course = (props) => {
               </div>
               <div className="flex gap-1">
                 <span>
-                  {props.myList || props.userFavorite ? (
+                  {props.myList || props.waitingPage ? (
                     <button
                       className="bg-red-500 px-2 py-1 rounded-md text-white flex gap-2 sm:text-base text-sm"
                       onClick={() => {
@@ -203,7 +223,7 @@ const Course = (props) => {
               className="w-[300px] rounded-md shadow-md md:m-0 mx-auto text-black dark:text-white text-2xl text-center"
             />
             <div className="absolute bottom-[50%] translate-y-[50%] left-[50%] translate-x-[-50%] bg-white/90 rounded-full h-[100px] shadow-2xl shadow-gray-400">
-              {props.userFavorite ? (
+              {props.waitingPage ? (
                 <Box sx={{ position: "relative", display: "inline-flex" }}>
                   <CircularProgress
                     variant="determinate"
@@ -266,13 +286,11 @@ const Course = (props) => {
               </div>
               <div className="flex justify-center gap-3 items-center">
                 <div className="w-[35px] h-[35px] bg-gray-100 rounded-full shadow-md shadow-gray-400 justify-center items-center flex cursor-pointer hover:bg-gray-200 transition-colors duration-300">
-                  {!contextData.bookList.some(
-                    (course) => course.id === props.id
-                  ) ? (
+                  {!userFavorite ? (
                     <BsBookmarkPlus
                       size={20}
                       className="text-black"
-                      onClick={() => contextData.handleAddToBookList(props.id)}
+                      onClick={handleAddFavorite}
                     />
                   ) : (
                     <BsFillBookmarkCheckFill size={20} className="text-black" />
@@ -280,20 +298,23 @@ const Course = (props) => {
                 </div>
                 <button
                   className={`${
-                    props.userIsLiked
+                    userIsLiked
                       ? "bg-red-500 border-red-500"
                       : "bg-black/30 border-white/30"
                   } p-2 rounded-lg  hover:border-red-500 border-2 transition-colors lg:text-base text-sm shadow-2xl flex gap-1 items-center`}
-                  onClick={() => props.handleLikeCourse(props.courseId)}
+                  onClick={() => {
+                    userIsLiked ||
+                      handleLikeCourse(props.courseId, contextData.token);
+                  }}
                 >
                   <div>
                     <AiFillHeart
                       className={`h-5 ${
-                        props.userIsLiked ? "text-white" : "text-red-500"
+                        userIsLiked ? "text-white" : "text-red-500"
                       }`}
                     />
                   </div>
-                  <span className="h-5 text-xs">{props.likeCount}</span>
+                  <span className="h-5 text-xs">{courseLike}</span>
                 </button>
               </div>
             </div>
