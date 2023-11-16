@@ -1,7 +1,6 @@
 import mainContext from "@/context/mainContext";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import HomeButton from "./common/HomeButton";
 import Link from "next/link";
 import { AiOutlineLogin } from "react-icons/ai";
 
@@ -29,14 +28,14 @@ const PrivateRoute = ({ children, message }) => {
     };
   }, []);
   useEffect(() => {
-    if (countdown === 0 && !contextData.userIsLogin) {
+    if (countdown === 0 && !contextData.currentUser) {
       router.replace("/Authentication/login");
     }
   }, [countdown]);
 
   return (
     <>
-      {contextData.userIsLogin ? (
+      {contextData.currentUser ? (
         children
       ) : (
         <div className="mt-[100px]">

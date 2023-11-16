@@ -1,4 +1,5 @@
 import mainContext from "@/context/mainContext";
+import { SendVerifyMessage } from "@/core/services/API/message";
 import { signUpStepTwo } from "@/core/validation/validation";
 import axios from "axios";
 import { ErrorMessage, Field, Form, Formik } from "formik";
@@ -64,9 +65,7 @@ const StepSecend = ({ next, prev, data }) => {
               <button
                 className="absolute top-6 left-3 text-[#2396f3] rounded-md cursor-pointer w-16 h-8 text-sm"
                 onClick={async () => {
-                  await axios.post(
-                    `https://api-academy.iran.liara.run/api/Sign/SendVerifyMessage?PhoneNumber=${data.phoneNumber}`
-                  );
+                  await SendVerifyMessage(data.phoneNumber);
                   contextData.handleShowSnack(
                     "کد برای شما فرستاده شد",
                     3000,

@@ -22,3 +22,19 @@ export const loginUser = async (userData) => {
     return error;
   }
 };
+
+export const resetPasswordStepOne = async (email, baseUrl) => {
+  const obj = {
+    email,
+    baseUrl,
+  };
+  try {
+    const result = await axios.post(
+      "https://acadapi.etacorealtime.ir/api/Sign/ForgetPassword",
+      obj
+    );
+    return result;
+  } catch (error) {
+    return error;
+  }
+};

@@ -40,7 +40,10 @@ const UserPanelLayout = ({
   const messages = [];
 
   useEffect(() => {
-    if (typeof background.current !== "undefined") {
+    if (
+      typeof background.current !== "undefined" &&
+      background.current !== null
+    ) {
       background.current.style.background = contextData.themeColor[2];
     }
     if (typeof header.current !== "undefined" && header.current !== null) {

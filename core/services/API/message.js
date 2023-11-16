@@ -3,7 +3,8 @@ import axios from "axios";
 export const SendVerifyMessage = async (phoneNumber) => {
   try {
     return await axios.post(
-      `https://acadapi.etacorealtime.ir/api/Sign/SendVerifyMessage?PhoneNumber=${phoneNumber}`
+      `https://acadapi.etacorealtime.ir/api/Sign/SendVerifyMessage`,
+      { phoneNumber }
     );
   } catch (error) {
     return error;

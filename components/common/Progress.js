@@ -10,18 +10,11 @@ const Progress = ({ stepsNumber, currentStep }) => {
     >
       <Box sx={{ width: "100%" }}>
         <Stepper activeStep={currentStep} alternativeLabel>
-          {/* {steps.map(step => (
-                
-            ))} */}
-          <Step>
-            <StepLabel />
-          </Step>
-          <Step>
-            <StepLabel />
-          </Step>
-          <Step>
-            <StepLabel />
-          </Step>
+          {steps.map((step) => (
+            <Step>
+              <StepLabel />
+            </Step>
+          ))}
         </Stepper>
       </Box>
     </div>

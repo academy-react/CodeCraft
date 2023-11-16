@@ -81,11 +81,14 @@ const MainContextProvider = ({ children }) => {
   };
   const handleRemoveUser = async () => {
     const newUsers = users.filter((user) => user.id !== currentUser.id);
-    useLocalStorage("users", newUsers, true);
+    useLocalStorage("token", null);
+    useLocalStorage("currentUser", null);
+    setToken(null);
     setUsers(newUsers);
     await router.replace("/");
-    setUserIsLogin(false);
     await useLocalStorage("userData", null);
+    setCurrentUser(null);
+    setUserIsLogin(false);
   };
   const scrollToTop = () => {
     if (typeof window !== "undefined") {

@@ -181,7 +181,7 @@ export const Header = () => {
                       size="25px"
                     />
                     {contextData.cartCourses.length &&
-                    contextData.userIsLogin ? (
+                    contextData.currentUser ? (
                       <span className="w-6 h-6 bg-[#2396f3] absolute -top-2 -right-2 text-white rounded-full text-center">
                         {contextData.cartCourses.length}
                       </span>
@@ -190,13 +190,13 @@ export const Header = () => {
                 </Link>
                 <Link
                   href={`${
-                    contextData.userIsLogin
+                    contextData.currentUser
                       ? "/userpanel"
                       : "/Authentication/login"
                   }`}
                 >
                   <li className="flex gap-4 bg-[#36a0f4] md:rounded-lg rounded-full p-3">
-                    {!contextData.userIsLogin ? (
+                    {!contextData.currentUser ? (
                       <>
                         <BiSolidUser color="#ffffff" size={"25px"} />
                         <span className="font-iran md:inline hidden text-white">
