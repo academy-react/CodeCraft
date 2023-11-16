@@ -3,17 +3,14 @@ import mainContext from "@/context/mainContext";
 import { loginUser } from "@/core/services/API/authentication";
 import { getUserInfo } from "@/core/services/API/user";
 import {
-  loginValidation,
   loginValidationEmail,
   loginValidationPhone,
 } from "@/core/validation/validation";
 import useLocalStorage from "@/hooks/useLocalStorage";
-import axios from "axios";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { jwtDecode } from "jwt-decode";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { AiFillEye, AiFillEyeInvisible, AiTwotonePhone } from "react-icons/ai";
 import { LuAtSign } from "react-icons/lu";
 
@@ -21,15 +18,17 @@ const Login = () => {
   const [passwordInputIsHidden, setPasswordInputIsHidden] = useState(true);
   const [loginWithEmail, setLoginWithEmail] = useState(false);
 
-  const contextData = useContext(mainContext);
+  const { setCurrentUser, handleLoginUser } = useContext(mainContext);
   const router = useRouter();
 
+  const buildNewValue = (values) => ({
+    phoneOrGmail: values.phone ? values.phone : values.email,
+    password: values.password,
+    rememberMe: values.rememberMe ? true : false,
+  });
+
   const handleSubmit = async (values, events) => {
-    const newValue = {
-      phoneOrGmail: values.phone ? values.phone : values.email,
-      password: values.password,
-      rememberMe: values.rememberMe ? true : false,
-    };
+    const newValue = buildNewValue(values);
     const result = await loginUser(newValue);
     if (result.data.success) {
       const userData = await getUserInfo(result.data.token);
@@ -37,15 +36,11 @@ const Login = () => {
         ? useLocalStorage("userData", userData.data, true)
         : null;
       useLocalStorage("token", result.data.token, true);
-      contextData.setCurrentUser(userData.data);
-      contextData.handleLoginUser(true);
+      setCurrentUser(userData.data);
+      handleLoginUser(true);
       router.replace("/");
     } else {
-      contextData.handleShowSnack(
-        "ایمیل یا رمز عبور شما اشتباه است",
-        3000,
-        "error"
-      );
+      handleShowSnack("ایمیل یا رمز عبور شما اشتباه است", 3000, "error");
     }
     events.resetForm();
   };
