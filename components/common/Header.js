@@ -4,13 +4,7 @@ import { BiSolidUser } from "react-icons/bi";
 import { BsCartFill, BsNewspaper } from "react-icons/bs";
 import { FaLightbulb } from "react-icons/fa";
 import { AiOutlineMenu } from "react-icons/ai";
-import {
-  CoursesData,
-  LatestArticlesData,
-  LatestNewsData,
-  navbar,
-  newsAndArticlesData,
-} from "@/DB/DataBase";
+import { CoursesData, navbar, newsAndArticlesData } from "@/DB/DataBase";
 import Link from "next/link";
 import {
   MdOutlineKeyboardArrowDown,
@@ -23,6 +17,8 @@ import { IoIosArrowUp } from "react-icons/io";
 import mainContext from "@/context/mainContext";
 import { RiArticleLine } from "react-icons/ri";
 import * as _ from "lodash";
+import { getAllCourses } from "@/core/services/API/course";
+import { getAllNews } from "@/core/services/API/Home";
 
 export const Header = () => {
   const contextData = useContext(mainContext);
@@ -30,10 +26,7 @@ export const Header = () => {
   const pathName = usePathname();
   const [scrollPosition, setScrollPosition] = useState(0);
   const [searchOn, setSearchOn] = useState(false);
-  const [allOptions, setAllOptions] = useState([
-    ...CoursesData,
-    ...newsAndArticlesData,
-  ]);
+  const [allOptions, setAllOptions] = useState([]);
   const [mainOptions, setMainOptions] = useState([]);
   const [searchTitle, setSearchTitle] = useState("");
   const [coursorInSearchBox, setCoursorInSearchBox] = useState(false);
@@ -60,6 +53,15 @@ export const Header = () => {
       setMainOptions([]);
     }
   }, [searchTitle]);
+  useEffect(() => {
+    const fetchOptions = async () => {
+      const coursesData = (await getAllCourses()).data.courseFilterDtos;
+      const newsAndArticlesData = (await getAllNews()).data.news;
+      return [...coursesData, ...newsAndArticlesData];
+    };
+
+    fetchOptions().then((data) => setAllOptions(data));
+  }, []);
 
   return (
     <>
@@ -118,23 +120,29 @@ export const Header = () => {
                     mainOptions.map((option) => (
                       <Link
                         href={`${
-                          option.students >= 0 ? "/courses" : "/news&Articles"
-                        }/${option.id}`}
+                          option.courseId
+                            ? `/courses/${option.courseId}`
+                            : `/news&Articles/${option.id}`
+                        }`}
                         key={option.id}
                       >
                         <li className="flex justify-between w-full pr-3 items-center h-fit pt-3 hover:bg-gray-100 pb-5 cursor-pointer">
                           <div className="flex justify-start items-center h-full w-fit gap-3">
                             <img
-                              src={option.image}
+                              src={option.image || "/images/noCourseimg.jpg"}
                               alt={`not found`}
                               className="w-[80px] rounded-md"
                             />
-                            <span>{option.title}</span>
+                            <span>
+                              {option.title.length > 20
+                                ? option.title.substring(0, 20) + "..."
+                                : option.title}
+                            </span>
                           </div>
                           <div className="h-full flex items-center pl-4 text-gray-700">
-                            {option.students >= 0 ? (
+                            {option.courseId ? (
                               <MdOutlineVideoLibrary size={30} />
-                            ) : option.categori === "مقالات" ? (
+                            ) : option.newsCatregoryName === "مقالات" ? (
                               <RiArticleLine size={30} />
                             ) : (
                               <BsNewspaper size={30} />

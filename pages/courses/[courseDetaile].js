@@ -2,7 +2,7 @@ import Rodemap from "@/components/common/Rodemap";
 import CourseDetailSection from "@/components/courseDetaile/CourseDetailSection";
 import Layout from "@/layout/Layout";
 import { useRouter } from "next/router";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   AiOutlineClockCircle,
   AiFillCalendar,
@@ -25,7 +25,7 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { FaInstagramSquare, FaTwitterSquare } from "react-icons/fa";
-import Course from "@/components/common/CourseCards/Course";
+import Course from "@/components/common/Course";
 import Comments from "@/components/common/Comments";
 import AddComment from "@/components/common/AddComment";
 import { format } from "date-fns";
@@ -165,6 +165,10 @@ const courseDetaile = (props) => {
       }
     }
   };
+
+  useEffect(() => {
+    console.log(product);
+  }, []);
 
   return (
     <>

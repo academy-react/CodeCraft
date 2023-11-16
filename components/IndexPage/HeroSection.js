@@ -35,13 +35,11 @@ const HeroSection = (props) => {
           <div className="w-full flex justify-center mt-9 gap-5 flex-wrap flex-row">
             {Object.keys(props.AboutUsData).map((item, index) => {
               return (
-                <>
-                  <Aboutus
-                    key={index}
-                    number={props.AboutUsData[item]}
-                    text={item}
-                  />
-                </>
+                <Aboutus
+                  key={index}
+                  number={props.AboutUsData[item]}
+                  text={item}
+                />
               );
             })}
           </div>
