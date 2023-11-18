@@ -6,9 +6,6 @@ import mainContext from "@/context/mainContext";
 import { useRouter } from "next/router";
 import React, { useContext, useState } from "react";
 import HomeButton from "@/components/common/HomeButton";
-import useLocalStorage from "@/hooks/useLocalStorage";
-import axios from "axios";
-import { values } from "lodash";
 import { SendVerifyMessage, VerifyMessage } from "@/core/services/API/message";
 import { Register } from "@/core/services/API/authentication";
 

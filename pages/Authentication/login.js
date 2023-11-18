@@ -17,6 +17,7 @@ import { LuAtSign } from "react-icons/lu";
 const Login = () => {
   const [passwordInputIsHidden, setPasswordInputIsHidden] = useState(true);
   const [loginWithEmail, setLoginWithEmail] = useState(false);
+  const { handleShowSnack } = useContext(mainContext);
 
   const { setCurrentUser, handleLoginUser } = useContext(mainContext);
   const router = useRouter();

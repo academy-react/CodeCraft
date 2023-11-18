@@ -21,3 +21,13 @@ export const VerifyMessage = async (data) => {
     return error;
   }
 };
+
+export const VerifyCofigValue = async (value) => {
+  try {
+    return await axios.get(
+      `https://acadapi.etacorealtime.ir/api/Sign/Reset/${value}`
+    );
+  } catch (error) {
+    return error;
+  }
+};

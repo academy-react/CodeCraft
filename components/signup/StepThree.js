@@ -26,11 +26,7 @@ const StepThree = ({ next, prev, data }) => {
   const [sholdeSaveUser, setSholdeSaveUser] = useState(false);
 
   const handleSubmit = (values) => {
-    if (!contextData.users.some((user) => user.email === values.email)) {
-      next(values);
-    } else {
-      contextData.handleShowSnack("ایمیل شما قبلا استفاده شده", 3000, "error");
-    }
+    next(values);
   };
   useEffect(() => {
     passwordValue.length >= 8

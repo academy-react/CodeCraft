@@ -54,23 +54,42 @@
 
 // export default StepOne;
 
+import mainContext from "@/context/mainContext";
+import { VerifyCofigValue } from "@/core/services/API/message";
 import { forgetPasswordStepOne } from "@/core/validation/validation";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { useLocation } from "react-use";
 
-const StepOne = ({ next }) => {
+const StepOne = (props) => {
   const url = useLocation();
-
-  const handleSubmit = (values) => {
-    next(values);
-  };
-
+  const { handleShowSnack } = useContext(mainContext);
+  useEffect(() => {
+    const configValue = url.href.split("/").at(-1);
+    if (configValue !== "forgetPass" && configValue.length > 40) {
+      const verifyValue = async () => {
+        const result = await VerifyCofigValue(configValue);
+        result.data.success
+          ? props.setStep(2)
+          : handleShowSnack(result.data.message, 3000, "error");
+        if (result.data.success) {
+          props.setStep(2);
+          props.setUserData({
+            message: result.data.message,
+            id: result.data.id,
+          });
+        } else {
+          handleShowSnack(result.data.message, 3000, "error");
+        }
+      };
+      verifyValue();
+    }
+  }, []);
   return (
     <Formik
       initialValues={{ email: "" }}
-      onSubmit={handleSubmit}
+      onSubmit={(values) => props.next(values)}
       validationSchema={forgetPasswordStepOne}
     >
       {(formProps) => (

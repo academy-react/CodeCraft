@@ -30,15 +30,16 @@ const StepThree = ({ next, prev }) => {
   };
   const handleSubmit = (values) => {
     if (passwordValue === passwordRepateValue) {
-      contextData.handleShowSnack(
-        "تغییر رمز با موفقیا انجام شد",
-        2000,
-        "seccess"
-      );
-      useLocalStorage("userData");
-      setTimeout(() => {
-        next(values, false, true);
-      }, 2000);
+      // contextData.handleShowSnack(
+      //   "تغییر رمز با موفقیا انجام شد",
+      //   2000,
+      //   "seccess"
+      // );
+      // useLocalStorage("userData");
+      // setTimeout(() => {
+      //   next(values, false, true);
+      // }, 2000);
+      next(values);
     } else {
       contextData.handleShowSnack(
         "رمز های وارد شده مطابقت نداشت",
@@ -226,7 +227,7 @@ const StepThree = ({ next, prev }) => {
             <button
               type="button"
               class="w-full bg-[#2396f3] text-white py-2 rounded-md cursor-pointer mt-4 h-12"
-              onClick={() => prev(formprops.values)}
+              onClick={() => prev(formprops.values, 0)}
             >
               قبلی
             </button>

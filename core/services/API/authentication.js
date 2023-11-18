@@ -38,3 +38,14 @@ export const resetPasswordStepOne = async (email, baseUrl) => {
     return error;
   }
 };
+
+export const resetPasswordStepThree = async (value) => {
+  try {
+    return await axios.post(
+      `https://acadapi.etacorealtime.ir/api/Sign/Reset`,
+      value
+    );
+  } catch (error) {
+    return error;
+  }
+};
