@@ -26,15 +26,24 @@ const Course = (props) => {
   const studentSpace =
     ((props.maxStudents - props.currentRegistrants) / props.maxStudents) * 100;
 
-  const handleLikeCourse = () => {
-    setCourseLike((prev) => (prev += 1));
-    setUserIsLiked(true);
-    likeCourse(props.courseId, contextData.token);
+  const handleLikeCourse = async () => {
+    const result = await likeCourse(props.courseId, contextData.token);
+    if (result.data?.success) {
+      setCourseLike((prev) => (prev += 1));
+      setUserIsLiked(true);
+    } else {
+      contextData.handleShowSnack(result.data?.message, 3000, "error");
+    }
   };
 
-  const handleAddFavorite = () => {
-    setuserFavorite(true);
-    addToFavorite(props.courseId, contextData.token);
+  const handleAddFavorite = async () => {
+    const result = await addToFavorite(props.courseId, contextData.token);
+    if (result.data?.success) {
+      setuserFavorite(true);
+      addToFavorite(props.courseId, contextData.token);
+    } else {
+      contextData.handleShowSnack(result.data?.message, 3000, "error");
+    }
   };
 
   useEffect(() => {

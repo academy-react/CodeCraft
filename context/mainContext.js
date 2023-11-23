@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useRef, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { CoursesData, userPanelColorsData, usersData } from "@/DB/DataBase";
 import Snack from "@/components/common/Snack";

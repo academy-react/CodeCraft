@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import { CoursesContext } from "@/context/coursesContext";
+import mainContext from "@/context/mainContext";
+import React, { useContext, useState } from "react";
 import { SlArrowUp } from "react-icons/sl";
 
-const FilterItem = ({ titleKeyName, selected, data, setSelected, title }) => {
+const CategoriFilter = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { setSelectedCategori, selectedCategori, allCategories } =
+    useContext(CoursesContext);
   return (
     <div className="w-full bg-white dark:bg-black rounded-xl shadow-lg p-4 transition-all">
       <div className="flex justify-between items-center">
-        <h1 className="text-[#555] dark:text-white">{title}</h1>
+        <h1 className="text-[#555] dark:text-white">دسته بندی </h1>
         <SlArrowUp
           className={`${
             isOpen ? "rotate-0" : "rotate-180"
@@ -23,29 +27,25 @@ const FilterItem = ({ titleKeyName, selected, data, setSelected, title }) => {
           <input
             type="radio"
             name="همه"
-            onClick={() => setSelected("همه")}
+            onClick={() => setSelectedCategori(null)}
             className="h-5"
-            checked={selected === "همه"}
+            checked={selectedCategori === null}
           />
           <span className="block h-5">همه</span>
         </span>
-        {data.map((item) => (
+        {allCategories.map((item) => (
           <span
             className="flex gap-3 items-start justify-start my-3"
-            key={titleKeyName ? item[titleKeyName] : item}
+            key={item.techName}
           >
             <input
-              onClick={() =>
-                setSelected(titleKeyName ? item[titleKeyName] : item)
-              }
+              onClick={() => setSelectedCategori(item.id)}
               type="radio"
-              name={titleKeyName ? item[titleKeyName] : item}
+              name={item.techName}
               className="h-5"
-              checked={selected === (titleKeyName ? item[titleKeyName] : item)}
+              checked={selectedCategori === item.id}
             />
-            <span className="block h-5">
-              {titleKeyName ? item[titleKeyName] : item}
-            </span>
+            <span className="block h-5">{item.techName}</span>
           </span>
         ))}
       </form>
@@ -53,4 +53,4 @@ const FilterItem = ({ titleKeyName, selected, data, setSelected, title }) => {
   );
 };
 
-export default FilterItem;
+export default CategoriFilter;

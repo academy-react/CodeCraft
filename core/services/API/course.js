@@ -1,9 +1,16 @@
+import mainContext from "@/context/mainContext";
 import axios from "axios";
+import { useContext } from "react";
 
-export const getAllCourses = async (query = "") => {
+export const getAllCourses = async (query = "", token) => {
   try {
     return await axios.get(
-      `https://acadapi.etacorealtime.ir/api/Home/GetCoursesWithPagination${query}`
+      `https://acadapi.etacorealtime.ir/api/Home/GetCoursesWithPagination${query}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
   } catch (error) {
     return error;
@@ -21,10 +28,16 @@ export const getAllTeachers = async () => {
 };
 
 export const likeCourse = async (courseID, token) => {
+  const header = {
+    Authorization: `Bearer ${token}`,
+  };
+
   try {
+    const header = {
+      Authorization: `Bearer ${token}`,
+    };
     return await axios.post(
-      `https://acadapi.etacorealtime.ir/api/Course/AddCourseLike`,
-      { courseId: courseID },
+      `https://acadapi.etacorealtime.ir/api/Course/AddCourseLike?CourseId=${courseID}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -41,11 +54,7 @@ export const addToFavorite = async (courseID, token) => {
     return await axios.post(
       `https://acadapi.etacorealtime.ir/api/Course/AddCourseFavorite`,
       { courseId: courseID },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+      { headers: { Authorization: `Bearer ${token}` } }
     );
   } catch (error) {
     return error;
