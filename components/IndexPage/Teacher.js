@@ -139,25 +139,6 @@ const Teacher = (props) => {
                     </div>
                   </div>
                 </div>
-
-                {/* <p className="text-gray-500 dark:text-gray-300 md:text-lg text-sm mt-3">
-                  {teacher.description}
-                </p>
-                <div className="flex text-[#2396f0]  justify-center mt-5 gap-5">
-                  
-                  {teacher.medias.includes("instagram") ? (
-                    <FaInstagramSquare
-                      size={"30px"}
-                      className="cursor-pointer"
-                    />
-                  ) : null}
-                  {teacher.medias.includes("twitter") ? (
-                    <FaTwitterSquare size={"30px"} className="cursor-pointer" />
-                  ) : null}
-                  {teacher.medias.includes("facebook") ? (
-                    <AiFillFacebook size={"30px"} className="cursor-pointer" />
-                  ) : null}
-                </div> */}
               </SwiperSlide>
             ))}
           </Swiper>

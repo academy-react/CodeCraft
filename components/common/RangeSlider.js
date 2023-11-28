@@ -1,14 +1,16 @@
+import { CoursesContext } from "@/context/coursesContext";
 import { Slider } from "@mui/material";
-import React from "react";
+import React, { useContext } from "react";
 
-const RangeSlider = ({ data, handleChange, max, min }) => {
+const RangeSlider = ({ data, max, min }) => {
+  const { setPriceRange } = useContext(CoursesContext);
   return (
     <Slider
       value={data}
-      onChange={handleChange}
+      onChange={(e) => setPriceRange(e.target.value)}
       valueLabelDisplay="auto"
-      max={max}
-      min={min}
+      max={max === -Infinity ? 0 : max}
+      min={min === Infinity ? 0 : min}
       getAriaValueText={(value) => `${value} ماه`}
       className="mt-3"
     />

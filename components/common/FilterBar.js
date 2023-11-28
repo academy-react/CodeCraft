@@ -1,44 +1,52 @@
-import React, { useContext, useEffect, useState } from "react";
-import FilterItem from "../allCourses/FilterItem";
+import React, { useContext } from "react";
+import FilterItem from "../allCourses/filterBar/FilterItem";
 import RangeSlider from "./RangeSlider";
 import { CoursesContext } from "@/context/coursesContext";
 import CategoriFilter from "../allCourses/filterBar/CategoriFilter";
+import TeacherFilter from "../allCourses/filterBar/TeacherFilter";
+import LevelFilter from "../allCourses/filterBar/LevelFilter";
+import CoursesTypeFilter from "../allCourses/filterBar/CoursesTypesFilter";
+import CoursesTypesFilter from "../allCourses/filterBar/CoursesTypesFilter";
 
-const FilterBar = ({
-  userpanel,
-  selectedCategori,
-  selectedStatus,
-  selectedTeacher,
-  spenddingTime,
-  recordingStatusSelected,
-  handleChangeCategori,
-  handlePriceChange,
-  handleSelectedTeacher,
-  handleSelectedStatus,
-  handleChangeSpenddingTime,
-  maxSpenddingTime,
-  minSpenddingTime,
-  handleRecordingStatusSelected,
-  handleMaxPrice,
-  handleMinPrice,
-  handleResetFilters,
-}) => {
+const FilterBar = ({ userpanel, handleResetFilters }) => {
   const {
-    allCategories,
-    teachers,
     allCourses,
     minPriceRange,
     maxPriceRange,
     priceRange,
+    setPriceRange,
   } = useContext(CoursesContext);
 
-  const allStatuses = [
-    ...new Set(
-      allCourses.map((course) => {
-        return course.levelName;
-      })
-    ),
-  ];
+  const handleMinPrice = (event) => {
+    if (!event.target.value) {
+      setPriceRange((prev) => [
+        +allCourses.reduce((prev, current) => {
+          if (current.cost < prev) {
+            return current.cost;
+          }
+          return prev;
+        }, allCourses[0]?.cost),
+        +prev[1],
+      ]);
+    } else {
+      setPriceRange((prev) => [+event.target.value, +prev[1]]);
+    }
+  };
+  const handleMaxPrice = (event) => {
+    if (!event.target.value) {
+      setPriceRange((prev) => [
+        +prev[0],
+        +allCourses.reduce((prev, current) => {
+          if (current.cost > prev) {
+            return current.cost;
+          }
+          return prev;
+        }, allCourses[0]?.cost),
+      ]);
+    } else {
+      setPriceRange((prev) => [+prev[0], +event.target.value]);
+    }
+  };
 
   return (
     <div className="col-span-1 lg:m-0 mt-3">
@@ -79,36 +87,18 @@ const FilterBar = ({
         </div>
         <RangeSlider
           data={priceRange}
-          handleChange={handlePriceChange}
           max={maxPriceRange}
           min={minPriceRange}
         />
       </div>
       <div className="mt-5">
-        <FilterItem
-          titleKeyName={"fullName"}
-          title={"اساتید"}
-          data={teachers}
-          setSelected={handleSelectedTeacher}
-          selected={selectedTeacher}
-        />
+        <TeacherFilter />
       </div>
       <div className="mt-5">
-        <FilterItem
-          titleKeyName={null}
-          title={"سطح دوره"}
-          data={allStatuses}
-          setSelected={handleSelectedStatus}
-          selected={selectedStatus}
-        />
+        <LevelFilter />
       </div>
       <div className="mt-5">
-        <FilterItem
-          title={"وضعیت دوره"}
-          data={["در حال ضبط", "تمام شده"]}
-          setSelected={handleRecordingStatusSelected}
-          selected={recordingStatusSelected}
-        />
+        <CoursesTypesFilter />
       </div>
     </div>
   );

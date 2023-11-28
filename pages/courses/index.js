@@ -1,12 +1,6 @@
 import { CoursesPageFilters } from "@/DB/DataBase";
 import Layout from "@/layout/Layout";
-import React, {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-  useHistory,
-} from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 import CourseIndexFilter from "@/components/IndexPage/IndexCourse/CourseIndexFilter";
 import Course from "@/components/common/Course";
@@ -26,86 +20,50 @@ import { CiViewColumn, CiViewList } from "react-icons/ci";
 import { IoIosAddCircle } from "react-icons/io";
 import { HiClock } from "react-icons/hi";
 import {
-  editCourses,
+  getAllCourseLevels,
+  getAllCourseType,
   getAllCourses,
   getAllTeachers,
 } from "@/core/services/API/course";
-import { useRouter } from "next/router";
 import Image from "next/image";
 import { CoursesContextProvider } from "@/context/coursesContext";
 import { getAllCategories } from "@/core/services/API/Home";
+import useLocalStorage from "@/hooks/useLocalStorage";
 
 const Courses = (props) => {
   const contextData = useContext(mainContext);
   const itemsPerPage = useRef();
-  const router = useRouter();
 
   const [CoursesData, setCoursesData] = useState([]);
-  const [filterSelected, setFilterSelected] = useState(7);
-  const [mainCourses, setMainCourses] = useState([]);
+  const maxPriceRange = Math.max(
+    ...props.allCourses.map((course) => course.cost)
+  );
+  const minPriceRange = Math.min(
+    ...props.allCourses.map((course) => course.cost)
+  );
+  const [filterSelected, setFilterSelected] = useState(1);
   const [courseSearch, setCourseSearch] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(6);
   const select = useRef(null);
   const [isFilterBarOpen, setIsFilterBarOpen] = useState(false);
-  const [selectedCategori, setSelectedCategori] = useState(
-    props.searchParam || "همه"
-  );
-  const [selectedTeacher, setSelectedTeacher] = useState("همه");
-  const [selectedStatus, setSelectedStatus] = useState("همه");
-  const [recordingStatusSelected, setRecordingStatusSelected] = useState("همه");
-  const [maxPriceRange, setMaxPriceRange] = useState(() => {
-    return Math.max(...CoursesData.map((course) => course.cost));
-  });
-  const [minPriceRange, setMinPriceRange] = useState(() => {
-    return Math.min(...CoursesData.map((course) => course.cost));
-  });
+  const [selectedCategori, setSelectedCategori] = useState(null);
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
+  const [selectedLevel, setSelectedLevel] = useState(null);
+  const [selectedType, setSelectedType] = useState(null);
   const [priceRange, setPriceRange] = useState([minPriceRange, maxPriceRange]);
   const [selectedView, setSelectedView] = useState("col");
 
-  const handleMinPrice = (event) => {
-    if (!event.target.value) {
-      setPriceRange((prev) => [
-        +mainCourses.reduce((prev, current) => {
-          if (current.nuumberprice < prev) {
-            return current.nuumberprice;
-          }
-          return prev;
-        }, mainCourses[0].nuumberprice),
-        +prev[1],
-      ]);
-    } else {
-      setPriceRange((prev) => [+event.target.value, +prev[1]]);
-    }
-  };
-  const handleMaxPrice = (event) => {
-    if (!event.target.value) {
-      setPriceRange((prev) => [
-        +prev[0],
-        +mainCourses.reduce((prev, current) => {
-          if (current.nuumberprice > prev) {
-            return current.nuumberprice;
-          }
-          return prev;
-        }, mainCourses[0].nuumberprice),
-      ]);
-    } else {
-      setPriceRange((prev) => [+prev[0], +event.target.value]);
-    }
-  };
   const handlePriceChange = (event) => {
     setPriceRange(event.target.value);
   };
 
-  const handleSearch = (event) => {
+  const handleSearch = _.debounce((event) => {
     setCourseSearch(event.target.value);
-  };
+  }, 1500);
   const handlePageChange = (event, page) => {
     setPage(page);
     contextData.scrollToTop();
-  };
-  const handleChangeMainCourses = (value) => {
-    // setCoursesData(value);
   };
   const handleChangeCategori = (value) => {
     setSelectedCategori(value);
@@ -116,35 +74,29 @@ const Courses = (props) => {
     );
     setSelectedTeacher(value);
   };
-  const handleSelectedStatus = (value) => {
-    setSelectedStatus(value);
-  };
-  const handleRecordingStatusSelected = (value) => {
-    setRecordingStatusSelected(value);
-  };
   const handleResetFilters = () => {
     setFilterSelected(2);
-    setMainCourses(CoursesData);
+    setCoursesData(CoursesData);
     setCourseSearch("");
     setPage(1);
     setIsFilterBarOpen(false);
-    setSelectedCategori("همه");
-    setSelectedTeacher("همه");
-    setSelectedStatus("همه");
-    setRecordingStatusSelected("همه");
+    setSelectedCategori(null);
+    setSelectedTeacher(null);
+    setSelectedLevel(null);
+    setSelectedType(null);
     setPriceRange([
-      CoursesData.reduce((prev, current) => {
+      props.allCourses.reduce((prev, current) => {
         if (current.cost < prev) {
           return current.cost;
         }
         return prev;
-      }, CoursesData[0] && CoursesData[0].cost),
-      CoursesData.reduce((prev, current) => {
+      }, props.allCourses[0] && props.allCourses[0].cost),
+      props.allCourses.reduce((prev, current) => {
         if (current.cost > prev) {
           return current.cost;
         }
         return prev;
-      }, CoursesData[0] && CoursesData[0].cost),
+      }, props.allCourses[0] && props.allCourses[0].cost),
     ]);
   };
   const handleDeleteCoursesData = (CourseID) => {
@@ -152,18 +104,57 @@ const Courses = (props) => {
       (course) => course.id !== CourseID
     );
     setCoursesData(newCourses);
-    setMainCourses(newCourses);
+    setCoursesData(newCourses);
   };
 
   useEffect(() => {
     const getDataCourses = async () => {
-      const result = await getAllCourses().then(
-        (data) => data.data.courseFilterDtos
-      );
+      const filter = {
+        page,
+        pageSize,
+        selectedCategori,
+        courseSearch,
+        selectedTeacher,
+        level: selectedLevel,
+        selectedType,
+        priceRange,
+        SortingCol:
+          filterSelected === 1
+            ? "likeCount"
+            : filterSelected === 2
+            ? "currentRegistrants"
+            : filterSelected === 3
+            ? "cost"
+            : filterSelected === 4
+            ? "cost"
+            : "lastUpdate",
+        SortType:
+          filterSelected === 3
+            ? "Asc"
+            : filterSelected === 4
+            ? "DESC"
+            : filterSelected === 5
+            ? "DESC"
+            : "Asc",
+      };
+      const result = await getAllCourses(
+        filter,
+        await useLocalStorage("token", "", true)
+      ).then((data) => data?.data?.courseFilterDtos || []);
       setCoursesData(result);
     };
     getDataCourses();
-  }, []);
+  }, [
+    page,
+    pageSize,
+    selectedCategori,
+    courseSearch,
+    selectedTeacher,
+    selectedLevel,
+    selectedType,
+    priceRange,
+    filterSelected,
+  ]);
 
   return (
     <>
@@ -176,7 +167,17 @@ const Courses = (props) => {
           minPriceRange,
           maxPriceRange,
           selectedCategori,
+          selectedTeacher,
+          selectedLevel,
+          CoursesData,
+          selectedType,
+          allLevels: props.allLevels,
+          allTypes: props.allTypes,
           setSelectedCategori,
+          setSelectedTeacher,
+          setPriceRange,
+          setSelectedLevel,
+          setSelectedType,
         }}
       >
         <Layout hidden={props.userpanel ? true : false}>
@@ -186,22 +187,16 @@ const Courses = (props) => {
                 <FilterBar
                   userpanel
                   filterSelected={filterSelected}
-                  courseSearch={courseSearch}
-                  changeMainCourses={handleChangeMainCourses}
                   selectedCategori={selectedCategori}
-                  selectedStatus={selectedStatus}
+                  selectedLevel={selectedLevel}
                   selectedTeacher={selectedTeacher}
                   priceRange={priceRange}
-                  recordingStatusSelected={recordingStatusSelected}
+                  selectedType={selectedType}
                   handleChangeCategori={handleChangeCategori}
                   handlePriceChange={handlePriceChange}
                   handleSelectedTeacher={handleSelectedTeacher}
-                  handleSelectedStatus={handleSelectedStatus}
                   maxPriceRange={maxPriceRange}
                   minPriceRange={minPriceRange}
-                  handleRecordingStatusSelected={handleRecordingStatusSelected}
-                  handleMaxPrice={handleMaxPrice}
-                  handleMinPrice={handleMinPrice}
                   handleResetFilters={handleResetFilters}
                   CoursesData={props.allCourses}
                 />
@@ -308,23 +303,16 @@ const Courses = (props) => {
                     userpanel
                     filterSelected={filterSelected}
                     courseSearch={courseSearch}
-                    changeMainCourses={handleChangeMainCourses}
                     selectedCategori={selectedCategori}
-                    selectedStatus={selectedStatus}
+                    selectedLevel={selectedLevel}
                     selectedTeacher={selectedTeacher}
                     priceRange={priceRange}
-                    recordingStatusSelected={recordingStatusSelected}
+                    selectedType={selectedType}
                     handleChangeCategori={handleChangeCategori}
                     handlePriceChange={handlePriceChange}
                     handleSelectedTeacher={handleSelectedTeacher}
-                    handleSelectedStatus={handleSelectedStatus}
                     maxPriceRange={maxPriceRange}
                     minPriceRange={minPriceRange}
-                    handleRecordingStatusSelected={
-                      handleRecordingStatusSelected
-                    }
-                    handleMaxPrice={handleMaxPrice}
-                    handleMinPrice={handleMinPrice}
                     handleResetFilters={handleResetFilters}
                     CoursesData={props.allCourses}
                   />
@@ -388,7 +376,7 @@ const Courses = (props) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {mainCourses.map((course) => {
+                        {CoursesData.map((course) => {
                           const studentSpace =
                             ((course.maxStudents - course.students) /
                               course.maxStudents) *
@@ -452,9 +440,7 @@ const Courses = (props) => {
                               </td>
                               <td className="py-2 px-3 text-sm text-center text-gray-500 dark:text-gray-300 md:table-cell hidden">
                                 <span className={`px-2 rounded-md`}>
-                                  {course.nuumberprice === 0
-                                    ? "رایگان"
-                                    : course.nuumberprice}
+                                  {course.cost === 0 ? "رایگان" : course.cost}
                                 </span>
                               </td>
                               <td className="py-2 px-3 text-sm text-center text-gray-500 dark:text-gray-300 md:table-cell hidden">
@@ -538,6 +524,12 @@ export async function getServerSideProps(context) {
   const getCategories = async () => {
     return await getAllCategories();
   };
+  const getCourseType = async () => {
+    return await getAllCourseType();
+  };
+  const getCourseLevels = async () => {
+    return await getAllCourseLevels();
+  };
   return {
     props: {
       searchParam: context.query.categori || null,
@@ -546,6 +538,8 @@ export async function getServerSideProps(context) {
       }),
       teachers: await getTeachers().then((data) => data.data),
       allCategories: await getCategories().then((data) => data.data),
+      allLevels: await getCourseLevels().then((data) => data.data),
+      allTypes: await getCourseType().then((data) => data.data),
     },
   };
 }

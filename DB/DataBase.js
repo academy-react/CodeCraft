@@ -1830,13 +1830,12 @@ export const indexPageCourseFilters = [
 ];
 
 export const CoursesPageFilters = [
-  { id: 2, title: "محبوب ترین" },
-  { id: 3, title: "پر فروش ترین" },
-  { id: 4, title: "تخفیف دار" },
-  { id: 5, title: "ارزان ترین" },
-  { id: 6, title: "گران ترین" },
-  { id: 7, title: "جدید ترین" },
-  { id: 8, title: "قدیمی ترین" },
+  { id: 1, title: "محبوب ترین" },
+  { id: 2, title: "پر فروش ترین" },
+  { id: 3, title: "ارزان ترین" },
+  { id: 4, title: "گران ترین" },
+  { id: 5, title: "جدید ترین" },
+  { id: 6, title: "قدیمی ترین" },
 ];
 
 export const LatestArticlesData = [

@@ -15,7 +15,13 @@ import axios from "axios";
 import { MdDelete } from "react-icons/md";
 import { BsBookmarkPlus, BsFillBookmarkCheckFill } from "react-icons/bs";
 import { Box, CircularProgress, Typography } from "@mui/material";
-import { addToFavorite, likeCourse } from "@/core/services/API/course";
+import {
+  DeleteFavorite,
+  DeletelikeCourse,
+  addToFavorite,
+  likeCourse,
+} from "@/core/services/API/course";
+import useLocalStorage from "@/hooks/useLocalStorage";
 
 const Course = (props) => {
   const contextData = useContext(mainContext);
@@ -27,20 +33,30 @@ const Course = (props) => {
     ((props.maxStudents - props.currentRegistrants) / props.maxStudents) * 100;
 
   const handleLikeCourse = async () => {
-    const result = await likeCourse(props.courseId, contextData.token);
+    const result = !userIsLiked
+      ? await likeCourse(props.courseId, useLocalStorage("token", "", true))
+      : await DeletelikeCourse(
+          props.courseId,
+          useLocalStorage("token", "", true)
+        );
     if (result.data?.success) {
-      setCourseLike((prev) => (prev += 1));
-      setUserIsLiked(true);
+      setCourseLike((prev) => (userIsLiked ? (prev -= 1) : (prev += 1)));
+      setUserIsLiked((prev) => !prev);
     } else {
       contextData.handleShowSnack(result.data?.message, 3000, "error");
     }
   };
 
   const handleAddFavorite = async () => {
-    const result = await addToFavorite(props.courseId, contextData.token);
+    const result = !userFavorite
+      ? await addToFavorite(props.courseId, useLocalStorage("token", "", true))
+      : await DeleteFavorite(
+          props.courseId,
+          useLocalStorage("token", "", true)
+        );
     if (result.data?.success) {
-      setuserFavorite(true);
-      addToFavorite(props.courseId, contextData.token);
+      setuserFavorite((prev) => !prev);
+      // addToFavorite(props.courseId, useLocalStorage("token", "", true));
     } else {
       contextData.handleShowSnack(result.data?.message, 3000, "error");
     }
@@ -120,8 +136,7 @@ const Course = (props) => {
                   : "bg-black/30 border-black/30"
               } p-2 rounded-lg  hover:border-red-500 border-2 transition-colors lg:text-base text-sm shadow-2xl flex gap-1 items-center`}
               onClick={() => {
-                userIsLiked ||
-                  handleLikeCourse(props.courseId, contextData.token);
+                handleLikeCourse(props.courseId, contextData.token);
               }}
             >
               <div>
@@ -147,7 +162,7 @@ const Course = (props) => {
                 <span className="text-xs">{props.classRoomName}</span>
               </div>
             </div>
-            <Link href={`/courses/${String(props.id)}`}>
+            <Link href={`/courses/${String(props.courseId)}`}>
               <h1 className="text-2xl text-center hover:text-[#2196f3] cursor-pointer transition-colors dark:text-white">
                 {props.title}
               </h1>
@@ -171,7 +186,11 @@ const Course = (props) => {
                       onClick={handleAddFavorite}
                     />
                   ) : (
-                    <BsFillBookmarkCheckFill size={20} className="text-black" />
+                    <BsFillBookmarkCheckFill
+                      size={20}
+                      className="text-black"
+                      onClick={handleAddFavorite}
+                    />
                   )}
                 </div>
                 {props.Discount && !props.myList ? (
@@ -204,7 +223,7 @@ const Course = (props) => {
                         contextData.handleShowModal(
                           "ایا مطمئنید که میخواهید این دوره را حذف کنید؟",
                           "error",
-                          () => props.handleDeleteCourse(props.id)
+                          () => props.handleDeleteCourse(props.courseId)
                         );
                       }}
                     >
@@ -302,7 +321,11 @@ const Course = (props) => {
                       onClick={handleAddFavorite}
                     />
                   ) : (
-                    <BsFillBookmarkCheckFill size={20} className="text-black" />
+                    <BsFillBookmarkCheckFill
+                      size={20}
+                      className="text-black"
+                      onClick={handleAddFavorite}
+                    />
                   )}
                 </div>
                 <button
@@ -312,8 +335,7 @@ const Course = (props) => {
                       : "bg-black/30 border-white/30"
                   } p-2 rounded-lg  hover:border-red-500 border-2 transition-colors lg:text-base text-sm shadow-2xl flex gap-1 items-center`}
                   onClick={() => {
-                    userIsLiked ||
-                      handleLikeCourse(props.courseId, contextData.token);
+                    handleLikeCourse(props.courseId, contextData.token);
                   }}
                 >
                   <div>
@@ -373,7 +395,7 @@ const Course = (props) => {
                     contextData.handleShowModal(
                       "ایا مطمئنید که میخواهید این دوره را حذف کنید؟",
                       "error",
-                      () => props.handleDeleteCourse(props.id)
+                      () => props.handleDeleteCourse(props.courseId)
                     )
                   }
                 >
@@ -382,7 +404,10 @@ const Course = (props) => {
                 </button>
               ) : (
                 <div className="flex justify-end gap-5">
-                  <Link href={`/courses/${String(props.id)}`} className="h-fit">
+                  <Link
+                    href={`/courses/${String(props.courseId)}`}
+                    className="h-fit"
+                  >
                     <button className="rounded-lg bg-green-500 text-white px-3 py-1">
                       جزئیات دوره
                     </button>

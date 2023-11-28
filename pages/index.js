@@ -91,7 +91,7 @@ export async function getServerSideProps() {
       coursesData: await getCourses().then((data) => data.data),
       categoris: await getCategories().then((data) => data.data),
       Aboutus: await getAboutUsData().then((data) => data.data),
-      News: await getNews().then((data) => data.data.news),
+      News: await getNews().then((data) => data.data?.news),
       teachers: await getTeachers().then((data) => data.data),
     },
   };

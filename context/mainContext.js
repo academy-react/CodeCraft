@@ -286,7 +286,7 @@ const MainContextProvider = ({ children }) => {
       setLatestTransactions([]);
     }
     // token
-    const token = useLocalStorage("token", "", true);
+    const token = userIsLogin ? useLocalStorage("token", "", true) : "";
     setToken(token);
   }, []);
   useEffect(() => {
