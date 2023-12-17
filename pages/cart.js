@@ -3,6 +3,7 @@ import Course from "@/components/common/Course";
 import mainContext from "@/context/mainContext";
 import Layout from "@/layout/Layout";
 import React, { useContext, useState } from "react";
+import CartCourse from "@/components/cart/cartCourse";
 
 const cart = () => {
   const contextData = useContext(mainContext);
@@ -80,7 +81,7 @@ const cart = () => {
           <ul className="w-full grid grid-cols-1 gap-3 lg:col-span-6 col-span-1">
             {contextData.cartCourses.length ? (
               contextData.cartCourses.map((course) => (
-                <Course
+                <CartCourse
                   {...course}
                   view="row"
                   cartCourse

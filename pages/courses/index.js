@@ -51,7 +51,10 @@ const Courses = (props) => {
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [selectedLevel, setSelectedLevel] = useState(null);
   const [selectedType, setSelectedType] = useState(null);
-  const [priceRange, setPriceRange] = useState([minPriceRange, maxPriceRange]);
+  const [priceRange, setPriceRange] = useState([
+    minPriceRange,
+    maxPriceRange >= 2000000000 ? 2000000000 : maxPriceRange,
+  ]);
   const [selectedView, setSelectedView] = useState("col");
 
   const handlePriceChange = (event) => {
@@ -364,9 +367,6 @@ const Courses = (props) => {
                           <th className="text-sm font-normal text-gray-700 dark:text-gray-200 sm:table-cell hidden">
                             مدرس
                           </th>
-                          <th className="text-sm font-normal text-gray-700 dark:text-gray-200">
-                            ظرفیت خالی
-                          </th>
                           <th className="text-sm font-normal text-gray-700 dark:text-gray-200 md:table-cell hidden">
                             قیمت
                           </th>
@@ -377,17 +377,16 @@ const Courses = (props) => {
                       </thead>
                       <tbody>
                         {CoursesData.map((course) => {
-                          const studentSpace =
-                            ((course.maxStudents - course.students) /
-                              course.maxStudents) *
-                            100;
                           return (
                             <tr key={course.id} className="">
                               <td className="py-2 px-3 text-sm text-center text-gray-500 dark:text-gray-300 flex justify-center">
-                                <Image
-                                  src={course.image}
+                                <img
+                                  src={
+                                    course.tumbImageAddress ||
+                                    "/images/noCourseimg.jpg"
+                                  }
                                   alt={course.title}
-                                  className="h-[40px] w-[80px] rounded-sm"
+                                  className=" w-[80px] rounded-sm"
                                 />
                               </td>
                               <td className="py-2 px-3 text-sm text-center text-gray-500 dark:text-gray-300">
@@ -395,48 +394,13 @@ const Courses = (props) => {
                               </td>
                               <td className="py-2 px-3 text-sm text-center text-gray-500 dark:text-gray-300 sm:table-cell hidden">
                                 <span className={`px-2 rounded-md`}>
-                                  {course.start}
+                                  {course.lastUpdate.slice(0, 10)}
                                 </span>
                               </td>
                               <td className="py-2 px-3 text-sm text-center text-gray-500 dark:text-gray-300  sm:table-cell hidden">
                                 <span className={`px-2 rounded-md`}>
-                                  {course.teacher}
+                                  {course.teacherName}
                                 </span>
-                              </td>
-                              <td className="py-2 px-3 text-sm text-center text-gray-500 dark:text-gray-300 ">
-                                <Box
-                                  sx={{
-                                    position: "relative",
-                                    display: "inline-flex",
-                                  }}
-                                >
-                                  <CircularProgress
-                                    variant="determinate"
-                                    color="primary"
-                                    value={100 - studentSpace}
-                                  />
-                                  <Box
-                                    sx={{
-                                      top: 0,
-                                      left: 0,
-                                      bottom: 0,
-                                      right: 0,
-                                      position: "absolute",
-                                      display: "flex",
-                                      alignItems: "center",
-                                      justifyContent: "center",
-                                    }}
-                                  >
-                                    <Typography
-                                      variant="caption"
-                                      color="text.secondary"
-                                    >
-                                      <span className="dark:text-white">
-                                        {`${Math.round(studentSpace)}%`}
-                                      </span>
-                                    </Typography>
-                                  </Box>
-                                </Box>
                               </td>
                               <td className="py-2 px-3 text-sm text-center text-gray-500 dark:text-gray-300 md:table-cell hidden">
                                 <span className={`px-2 rounded-md`}>
@@ -446,24 +410,15 @@ const Courses = (props) => {
                               <td className="py-2 px-3 text-sm text-center text-gray-500 dark:text-gray-300 md:table-cell hidden">
                                 <div className="flex justify-center cursor-pointer">
                                   {contextData.userCourses.some(
-                                    (Course) => Course.id === course.id
+                                    (Course) =>
+                                      Course.courseId === course.courseId
                                   ) ||
-                                  contextData.cartCourses.some(
-                                    (Course) => Course.id === course.id
-                                  ) ? (
+                                  contextData.cartCourses.some((Course) => {
+                                    return Course.courseId === course.courseId;
+                                  }) ? (
                                     <IoIosAddCircle
                                       size={25}
                                       className="text-gray-500"
-                                    />
-                                  ) : !studentSpace ? (
-                                    <HiClock
-                                      size={25}
-                                      className="text-yellow-500"
-                                      onClick={() =>
-                                        contextData.handleAddToWaitingPage(
-                                          course.id
-                                        )
-                                      }
                                     />
                                   ) : (
                                     <IoIosAddCircle

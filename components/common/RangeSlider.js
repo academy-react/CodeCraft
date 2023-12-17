@@ -7,9 +7,15 @@ const RangeSlider = ({ data, max, min }) => {
   return (
     <Slider
       value={data}
-      onChange={(e) => setPriceRange(e.target.value)}
+      onChange={(e) =>
+        setPriceRange(
+          e.target.value[1] >= 2000000000
+            ? [e.target.value[0], 2000000000]
+            : e.target.value
+        )
+      }
       valueLabelDisplay="auto"
-      max={max === -Infinity ? 0 : max}
+      max={max === -Infinity ? 0 : max >= 2000000000 ? 2000000000 : max}
       min={min === Infinity ? 0 : min}
       getAriaValueText={(value) => `${value} ماه`}
       className="mt-3"

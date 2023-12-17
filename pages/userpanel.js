@@ -19,8 +19,15 @@ import ShoppingCart from "@/components/userPanel/ShoppingCart";
 import { Router, useRouter } from "next/router";
 import mainContext from "@/context/mainContext";
 import BookMarks from "@/components/userPanel/BookMarks";
+import {
+  getAllCourseLevels,
+  getAllCourseType,
+  getAllCourses,
+  getAllTeachers,
+} from "@/core/services/API/course";
+import { getAllCategories } from "@/core/services/API/Home";
 
-const userpanel = () => {
+const userpanel = (props) => {
   const handleItemChange = (currentItem) => {
     setSelectedItem(currentItem.textContent);
     setCurrentComponent(
@@ -54,7 +61,7 @@ const userpanel = () => {
       id: 3,
       title: "لیست دوره ها",
       icon: <MdPlaylistAdd size={sideBarOpen ? "20px" : "30px"} />,
-      relatedComponent: <CoursesList />,
+      relatedComponent: <CoursesList {...props} />,
     },
     {
       id: 4,
@@ -63,22 +70,10 @@ const userpanel = () => {
       relatedComponent: <MyList />,
     },
     {
-      id: 5,
-      title: "صفحه انتظار",
-      icon: <AiOutlineClockCircle size={sideBarOpen ? "20px" : "30px"} />,
-      relatedComponent: <WatingPage />,
-    },
-    {
       id: 6,
       title: "سبد خرید",
       icon: <FiShoppingCart size={sideBarOpen ? "20px" : "30px"} />,
       relatedComponent: <ShoppingCart />,
-    },
-    {
-      id: 6,
-      title: "ذخیره شده ها",
-      icon: <MdOutlineBookmarks size={sideBarOpen ? "20px" : "30px"} />,
-      relatedComponent: <BookMarks />,
     },
     {
       id: 7,
@@ -121,5 +116,41 @@ const userpanel = () => {
     </UserPanelLayout>
   );
 };
+
+export async function getServerSideProps(context) {
+  const paramstart = context.req.url.indexOf("?");
+  const querys =
+    paramstart > 0
+      ? context.req.url.slice(paramstart, context.req.url.length)
+      : "";
+
+  const getMaxCourses = async () => {
+    return await getAllCourses();
+  };
+  const getTeachers = async () => {
+    return await getAllTeachers();
+  };
+  const getCategories = async () => {
+    return await getAllCategories();
+  };
+  const getCourseType = async () => {
+    return await getAllCourseType();
+  };
+  const getCourseLevels = async () => {
+    return await getAllCourseLevels();
+  };
+  return {
+    props: {
+      searchParam: context.query.categori || null,
+      allCourses: await getMaxCourses().then((data) => {
+        return data.data.courseFilterDtos;
+      }),
+      teachers: await getTeachers().then((data) => data.data),
+      allCategories: await getCategories().then((data) => data.data),
+      allLevels: await getCourseLevels().then((data) => data.data),
+      allTypes: await getCourseType().then((data) => data.data),
+    },
+  };
+}
 
 export default userpanel;

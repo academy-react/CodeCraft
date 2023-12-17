@@ -193,10 +193,12 @@ const MainContextProvider = ({ children }) => {
     useLocalStorage("waitingPageCourses", newWaitingCourses, true);
   };
   const handleDeleteFromUserCourse = (CourseID) => {
-    const newUserCourses = userCourses.filter(
-      (course) => course.id !== CourseID
-    );
+    const newUserCourses = userCourses.filter((course) => {
+      console.log(course.id, CourseID);
+      return course.id !== CourseID;
+    });
     handleBuy(newUserCourses);
+    console.log(newUserCourses);
     useLocalStorage("userCourses", newUserCourses, true);
   };
   const handleToggleUser = (userID) => {

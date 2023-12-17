@@ -99,9 +99,6 @@ const Dashbord = (props) => {
                 <th className="text-sm font-normal text-gray-700 dark:text-gray-200 sm:table-cell hidden">
                   مدرس
                 </th>
-                <th className="text-sm font-normal text-gray-700 dark:text-gray-200">
-                  ظرفیت خالی
-                </th>
                 <th className="text-sm font-normal text-gray-700 dark:text-gray-200 md:table-cell hidden">
                   قیمت
                 </th>
@@ -118,9 +115,9 @@ const Dashbord = (props) => {
                     <tr key={course.id} className="">
                       <td className="py-2 px-3 text-sm text-center text-gray-500 dark:text-gray-300 flex justify-center">
                         <img
-                          src={course.image}
+                          src={course.image || "/images/noCourseimg.jpg"}
                           alt={course.title}
-                          className="h-[40px] w-[80px] rounded-sm"
+                          className=" w-[80px] rounded-sm"
                         />
                       </td>
                       <td className="py-2 px-3 text-sm text-center text-gray-500 dark:text-gray-300">
@@ -135,41 +132,6 @@ const Dashbord = (props) => {
                         <span className={`px-2 rounded-md`}>
                           {course.teacher}
                         </span>
-                      </td>
-                      <td className="py-2 px-3 text-sm text-center text-gray-500 dark:text-gray-300 ">
-                        <Box
-                          sx={{
-                            position: "relative",
-                            display: "inline-flex",
-                          }}
-                        >
-                          <CircularProgress
-                            variant="determinate"
-                            color="primary"
-                            value={100 - studentSpace}
-                          />
-                          <Box
-                            sx={{
-                              top: 0,
-                              left: 0,
-                              bottom: 0,
-                              right: 0,
-                              position: "absolute",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
-                            >
-                              <span className="dark:text-white">
-                                {`${Math.round(studentSpace)}%`}
-                              </span>
-                            </Typography>
-                          </Box>
-                        </Box>
                       </td>
                       <td className="py-2 px-3 text-sm text-center text-gray-500 dark:text-gray-300 md:table-cell hidden">
                         <span className={`px-2 rounded-md`}>

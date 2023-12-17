@@ -58,12 +58,59 @@ const ProfileField = (props) => {
             className="text-red-500"
           ></ErrorMessage>
         </div>
+      ) : props.type === "option" ? (
+        <div>
+          <Field
+            name={props.name}
+            as="select"
+            className={`rounded-md h-[50px] shadow-md pr-5 bg-white  ${
+              !props.disabled ? " border-l-8" : "border-none"
+            } ${
+              errors[props.name]
+                ? "border-red-500"
+                : "border-green-400 dark:border-green-500"
+            } outline-none text-gray-700 w-full mb-3`}
+          >
+            {props.options.map((option) => (
+              <>
+                <option value={option.value}>{option.title}</option>
+              </>
+            ))}
+          </Field>
+          <ErrorMessage
+            name={props.name}
+            component={"span"}
+            className="text-red-500"
+          ></ErrorMessage>
+        </div>
+      ) : props.type === "textArea" ? (
+        <>
+          <div>
+            <Field
+              name={props.name}
+              as="textarea"
+              className={`rounded-md h-[50px] shadow-md pr-5 bg-white pt-3 ${
+                !props.disabled ? " border-l-8" : "border-none"
+              } ${
+                errors[props.name]
+                  ? "border-red-500"
+                  : "border-green-400 dark:border-green-500"
+              } outline-none text-gray-700 w-full mb-3`}
+              placeholder={props.placeholder}
+            ></Field>
+            <ErrorMessage
+              name={props.name}
+              component={"span"}
+              className="text-red-500"
+            ></ErrorMessage>
+          </div>
+        </>
       ) : (
         <input
           id="profile"
           name="profile"
           type="file"
-          className="rounded-md h-[50px] shadow-md pr-5 border-l-8 border-green-400 dark:border-green-500 outline-none text-gray-700 w-full invisible"
+          className="rounded-md h-[50px] shadow-md pr-5 border-l-8 border-green-400 dark:border-green-500 outline-none text-gray-700 w-full invisible "
           onChange={(e) => {
             const selectedImage = e.target.files[0];
             const formData = new FormData();

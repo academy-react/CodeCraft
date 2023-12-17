@@ -76,7 +76,11 @@ const Course = (props) => {
         >
           <div className="w-full relative h-[60%]">
             <img
-              src={props.tumbImageAddress || "/images/noCourseimg.jpg"}
+              src={
+                !props.mylist
+                  ? props.tumbImageAddress || "/images/noCourseimg.jpg"
+                  : props.image
+              }
               alt={"مشکلی پیش امده"}
               className="w-full h-full text-center leading-[200px] text-3xl text-black dark:text-white"
             />
@@ -120,14 +124,18 @@ const Course = (props) => {
           <div className="absolute top-0 pt-1 w-full flex justify-between px-3">
             <span
               className={`${
-                props.levelName === "اسان"
+                !props.myList
+                  ? props.levelName
+                  : props.status === "اسان"
                   ? "bg-green-400"
-                  : props.levelName === "متوسط"
+                  : !props.myList
+                  ? props.levelName
+                  : props.status === "متوسط"
                   ? "bg-[#2396f3]"
                   : "bg-black"
               } h-6 px-2 py-1 text-xs rounded-lg border-white`}
             >
-              {props.levelName}
+              {!props.myList ? props.levelName : props.status}
             </span>
             <button
               className={`${
@@ -146,20 +154,31 @@ const Course = (props) => {
                   }`}
                 />
               </div>
-              <span className="h-5 text-xs">{courseLike}</span>
+              <span className="h-5 text-xs">
+                {!props.myList ? courseLike : props.like}
+              </span>
             </button>
           </div>
           <div className="bg-white dark:bg-black dark:text-white h-[42%] rounded-xl absolute bottom-0 w-full text-[#4c5c84] p-2">
             <div className="flex justify-between items-center text-gray-500 dark:text-white gap-1">
               <span
                 className={`text-xs px-2 py-1 shadow-md text-white rounded-md ${
-                  props.statusName ? "bg-green-500" : "bg-black"
+                  !props.myList
+                    ? props.statusName
+                    : props.recordingStatus
+                    ? "bg-green-500"
+                    : "bg-black"
                 }`}
               >
-                {props.statusName}
+                {(!props.myList ? props.statusName : props.recordingStatus) ===
+                true
+                  ? "در حال برگزاری"
+                  : "تمام شده"}
               </span>
               <div className="flex justify-center gap-2 items-center">
-                <span className="text-xs">{props.classRoomName}</span>
+                <span className="text-xs bg-black text-white px-2 py-1 rounded-md">
+                  {!props.myList ? props.classRoomName : props.categori}
+                </span>
               </div>
             </div>
             <Link href={`/courses/${String(props.courseId)}`}>
@@ -169,7 +188,7 @@ const Course = (props) => {
             </Link>
             <div className="w-full flex gap-2 items-center justify-center relative left-2 pb-1 border-b border-[#cccccc] py-3">
               <span className="text-base hover:text-[#2196f3] transition-colors cursor-pointer">
-                {props.teacherName}
+                {!props.myList ? props.teacherName : props.teacher}
               </span>
             </div>
             <div
@@ -223,7 +242,10 @@ const Course = (props) => {
                         contextData.handleShowModal(
                           "ایا مطمئنید که میخواهید این دوره را حذف کنید؟",
                           "error",
-                          () => props.handleDeleteCourse(props.courseId)
+                          () =>
+                            props.handleDeleteCourse(
+                              !props.myList ? props.courseId : props.id
+                            )
                         );
                       }}
                     >
@@ -246,7 +268,11 @@ const Course = (props) => {
         >
           <div className="relative ">
             <img
-              src={props.tumbImageAddress || "/images/noCourseimg.jpg"}
+              src={
+                !props.mylist
+                  ? props.tumbImageAddress || "/images/noCourseimg.jpg"
+                  : props.image
+              }
               alt={"مشکلی پیش امده"}
               className="w-[300px] rounded-md shadow-md md:m-0 mx-auto text-black dark:text-white text-2xl text-center"
             />
@@ -291,25 +317,39 @@ const Course = (props) => {
             <div className="pt-1 w-full flex justify-between items-center mb-1">
               <span
                 className={`${
-                  props.levelName === "اسان"
+                  !props.myList
+                    ? props.levelName === "اسان"
+                    : props.status
                     ? "bg-green-400"
-                    : props.levelName === "متوسط"
+                    : !props.myList
+                    ? props.levelName === "متوسط"
+                    : props.status
                     ? "bg-[#2396f3]"
                     : "bg-black"
                 } h-6 px-2 py-1 text-xs rounded-lg border-white border `}
               >
-                {props.levelName}
+                {!props.myList ? props.levelName : props.status}
               </span>
               <div className="flex justify-between items-center text-gray-500 dark:text-white gap-5">
                 <span
                   className={`text-xs px-2 shadow-sm border border-white shadow-white py-1 text-white rounded-md ${
-                    props.statusName ? "bg-green-500" : "bg-black"
+                    !props.myList
+                      ? props.statusName
+                      : props.recordingStatus
+                      ? "bg-green-500"
+                      : "bg-black"
                   }`}
                 >
-                  {props.statusName}
+                  {!props.myList
+                    ? props.statusName
+                    : props.recordingStatus
+                    ? "در حال ضبط"
+                    : "تمام شده"}
                 </span>
                 <div className="flex justify-center gap-2 items-center">
-                  <span className="text-base">{props.classRoomName}</span>
+                  <span className="text-base">
+                    {!props.myList ? props.classRoomName : props.categori}
+                  </span>
                 </div>
               </div>
               <div className="flex justify-center gap-3 items-center">
@@ -345,13 +385,15 @@ const Course = (props) => {
                       }`}
                     />
                   </div>
-                  <span className="h-5 text-xs">{courseLike}</span>
+                  <span className="h-5 text-xs">
+                    {!props.myList ? courseLike : props.like}
+                  </span>
                 </button>
               </div>
             </div>
             <div className="w-full flex gap-2 items-center justify-start relative left-2 pb-1 border-b border-[#cccccc]">
               <span className="text-base hover:text-[#2196f3] transition-colors cursor-pointer text-gray-500 dark:text-gray-300">
-                {props.teacherName}
+                {!props.myList ? props.teacherName : props.teacher}
               </span>
             </div>
             <div className="flex justify-between items-center mt-2">
@@ -361,22 +403,26 @@ const Course = (props) => {
               <div className="flex justify-center items-center text-[#4c5c84] gap-5">
                 <div className="flex justify-center items-center dark:text-white">
                   <PiStudentFill />
-                  <span>{props.currentRegistrants}</span>
+                  <span>
+                    {!props.myList ? props.currentRegistrants : props.students}
+                  </span>
                 </div>
                 <div className="flex justify-center items-center gap-1 bg-[#ffca58] px-1 rounded-md text-[#d89f24]">
                   <AiTwotoneStar />
-                  <span className="text-white">{props.courseRate}</span>
+                  <span className="text-white">
+                    {!props.myList ? props.courseRate : props.star}
+                  </span>
                 </div>
               </div>
             </div>
             <p className="text-gray-400 dark:text-gray-200 my-4 w-full">
-              {props.describe}
+              {!props.myList ? props.describe : props.desceiption}
             </p>
             <div className="flex justify-between items-center h-10">
               <div className="flex justify-start text-black items-center md:gap-5 gap-1">
                 <div className="flex gap-1">
                   <span className="text-black dark:text-white lg:inline hidden">
-                    {props.cost + "تومان"}
+                    {!props.myList ? props.cost : props.nuumberprice + " تومان"}
                   </span>
                 </div>
                 {props.Discount && !props.myList ? (
@@ -395,7 +441,10 @@ const Course = (props) => {
                     contextData.handleShowModal(
                       "ایا مطمئنید که میخواهید این دوره را حذف کنید؟",
                       "error",
-                      () => props.handleDeleteCourse(props.courseId)
+                      () =>
+                        props.handleDeleteCourse(
+                          !props.myList ? props.courseId : props.id
+                        )
                     )
                   }
                 >

@@ -43,70 +43,74 @@ const LastArticles = (props) => {
         <div
           className={`${
             !props.data > 1 ? "col-span-2" : "col-span-3"
-          } md:row-span-2 row-span-3 rounded-lg relative cursor-pointer hover:bg-slate-50 h-[700px]`}
+          } md:row-span-2 row-span-3 rounded-lg relative cursor-pointer hover:bg-slate-50 bg-white dark:bg-[#1c1c1c] flex justify-center h-[700px]`}
           data-aos="fade-left"
         >
           <img
-            src={topArticles[0].currentImageAddressTumb}
-            alt={topArticles[0].title}
-            className="w-full object-center h-full rounded-lg z-[8]"
+            src={
+              topArticles[0].currentImageAddressTumb || "/images/article.jpg"
+            }
+            alt={"/images/article.jpg"}
+            className=" object-center h-full rounded-lg z-[8] object-"
           />
           <div className="absolute w-full h-full top-0 right-0 z-[9] hover:bg-[#2196f3] hover:opacity-20 rounded-lg"></div>
           <div className="absolute md:bottom-10 bottom-0 md:-right-8 right-0 shadow-sm rounded-lg p-5 md:w-[80%] w-full h-28 md:bg-white bg-white/80 md:dark:bg-black shadow-white dark:bg-black/80 transition-all md:hover:bottom-20 z-10">
             <span className="text-[#2196f3] text-xl">مقالات</span>
-            <p className="text-[#55648a] md:text-4xl text-xl dark:text-white">
+            <p className="text-[#55648a] md:text-4xl text-xl dark:text-white shadow-lg">
               {topArticles[0].title}
             </p>
           </div>
         </div>
-        {topArticles.slice(1, windowSize <= 768 ? 4 : 3).map((item, index) => (
-          <div
-            key={item.id}
-            data-aos="flip-right"
-            className="col-span-1 row-span-1 rounded-lg relative cursor-pointer"
-            onMouseOver={() => {
-              !index
-                ? setFarstArticleHover(true)
-                : index === 1
-                ? setSecendArticleHover(true)
-                : setThardArticleHover(true);
-            }}
-            onMouseOut={() => {
-              !index
-                ? setFarstArticleHover(false)
-                : index === 1
-                ? setSecendArticleHover(false)
-                : setThardArticleHover(false);
-            }}
-          >
-            <img
-              src={item.currentImageAddressTumb}
-              alt={item.title}
-              className="rounded-lg w-full h-full"
-            />
-            <div className="absolute w-full h-full top-0 right-0 z-[9] hover:bg-[#2196f3] hover:opacity-20 rounded-lg"></div>
+        {topArticles
+          .slice(0, windowSize <= 768 ? 3 : windowSize >= 1024 ? 3 : 2)
+          .map((item, index) => (
             <div
-              className={`absolute rounded-lg p-5 w-full ${
-                (
-                  !index
-                    ? farstArticleHover
-                    : index === 1
-                    ? SecendArticleHover
-                    : ThardArticleHover
-                )
-                  ? "h-20"
-                  : "h-0"
-              } overflow-hidden transition-all bottom-0 bg-white/80 dark:bg-black/80 z-10`}
+              key={item.id}
+              data-aos="flip-right"
+              className="col-span-1 row-span-1 rounded-lg relative cursor-pointer"
+              onMouseOver={() => {
+                !index
+                  ? setFarstArticleHover(true)
+                  : index === 1
+                  ? setSecendArticleHover(true)
+                  : setThardArticleHover(true);
+              }}
+              onMouseOut={() => {
+                !index
+                  ? setFarstArticleHover(false)
+                  : index === 1
+                  ? setSecendArticleHover(false)
+                  : setThardArticleHover(false);
+              }}
             >
-              <span className="text-[#2396f3] md:text-base text-sm">
-                مقالات
-              </span>
-              <p className="text-[#55648a] dark:text-white md:text-xl text-xs">
-                {item.title}
-              </p>
+              <img
+                src={item.currentImageAddressTumb || "/images/article.jpg"}
+                alt={"/images/article.jpg"}
+                className="rounded-lg"
+              />
+              <div className="absolute w-full h-full top-0 right-0 z-[9] hover:bg-[#2196f3] hover:opacity-20 rounded-lg"></div>
+              <div
+                className={`absolute rounded-lg p-5 w-full ${
+                  (
+                    !index
+                      ? farstArticleHover
+                      : index === 1
+                      ? SecendArticleHover
+                      : ThardArticleHover
+                  )
+                    ? "h-20"
+                    : "h-0"
+                } overflow-hidden transition-all bottom-0 bg-white/80 dark:bg-black/80 z-10`}
+              >
+                <span className="text-[#2396f3] md:text-base text-sm">
+                  مقالات
+                </span>
+                <p className="text-[#55648a] dark:text-white md:text-xl text-xs">
+                  {item.title}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
       <div className="w-full h-[300px] border-white border-8 rounded-lg overflow-hidden sm:hidden">
         <Swiper
@@ -126,8 +130,8 @@ const LastArticles = (props) => {
             <SwiperSlide className="h-[300px] w-full" key={item.id}>
               <div className="relative h-full">
                 <img
-                  src={item.currentImageAddressTumb}
-                  alt={item.title}
+                  src={item.currentImageAddressTumb || "/images/article.jpg"}
+                  alt={"/images/article.jpg"}
                   className="w-full h-full"
                 />
                 <div className="absolute bottom-0 w-full h-[30%] p-3 bg-white/80 dark:bg-black/80">
